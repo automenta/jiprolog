@@ -21,8 +21,9 @@ package com.ugos.jiprolog.extensions.io;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Hashtable;
 
 public final class See2 extends JIPXCall
 {

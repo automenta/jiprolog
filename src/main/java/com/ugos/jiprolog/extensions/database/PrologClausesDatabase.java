@@ -20,10 +20,15 @@
 
 package com.ugos.jiprolog.extensions.database;
 
-import com.ugos.jiprolog.engine.*;
+import com.ugos.jiprolog.engine.JIPClause;
+import com.ugos.jiprolog.engine.JIPClausesDatabase;
+import com.ugos.jiprolog.engine.JIPFunctor;
+import com.ugos.jiprolog.engine.JIPRuntimeException;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Enumeration;
-import java.io.*;
 
 public class PrologClausesDatabase extends JIPClausesDatabase
 {
@@ -62,7 +67,7 @@ public class PrologClausesDatabase extends JIPClausesDatabase
         }
 
 
-        m_writer.println(clause.getHead().toString() + ".");
+        m_writer.println(clause.getHead().toString() + '.');
         m_writer.flush();
         m_writer.close();
 

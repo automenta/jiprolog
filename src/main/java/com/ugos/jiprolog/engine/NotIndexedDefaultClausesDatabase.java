@@ -22,8 +22,8 @@ package com.ugos.jiprolog.engine;
 
 class NotIndexedDefaultClausesDatabase extends DefaultClausesDatabase
 {
-    private String m_strFullName;
-    private GlobalDB m_gdb;
+    private final String m_strFullName;
+    private final GlobalDB m_gdb;
     public NotIndexedDefaultClausesDatabase(final String strFunctName, final int nArity, final String strFullName, GlobalDB gdb)
     {
     	super(strFunctName, nArity);

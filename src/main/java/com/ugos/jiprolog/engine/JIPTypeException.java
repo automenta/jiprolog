@@ -43,7 +43,7 @@ public class JIPTypeException extends JIPRuntimeException {
     public static final int PREDICATE_INDICATOR = 6;
     public static final int COMPOUND = 7;
     public static final int LIST = 8;
-    public static final int COMPARATION_OPERATOR = 9;
+    private static final int COMPARATION_OPERATOR = 9;
     public static final int CALLABLE = 10;
     public static final int EVALUABLE = 11;
     public static final int LIBRARY = 12;
@@ -85,8 +85,8 @@ public class JIPTypeException extends JIPRuntimeException {
 
     }
 
-	private String typeError;
-	private PrologObject culprit;
+	private final String typeError;
+	private final PrologObject culprit;
 
 	public JIPTypeException(int typeError, JIPTerm culprit)
 	{

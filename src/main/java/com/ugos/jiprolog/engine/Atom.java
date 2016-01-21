@@ -28,7 +28,7 @@ final class Atom extends PrologObject //implements Serializable
 
 	final static long serialVersionUID = 300000001L;
 
-    static final Hashtable<String, Atom> s_atomTable = new Hashtable<String, Atom>(101);
+    static final Hashtable<String, Atom> s_atomTable = new Hashtable<>(101);
 
     final static Atom COMMA 	 = Atom.createAtom(",/2");
     final static Atom SEMICOLON = Atom.createAtom(";/2");
@@ -43,8 +43,8 @@ final class Atom extends PrologObject //implements Serializable
     final static Atom SLASH     = Atom.createAtom("/2");
     final static Atom NIL 		 = Atom.createAtom("[]");
 
-    private String m_strAtom;
-    private int m_nHashValue;
+    private final String m_strAtom;
+    private final int m_nHashValue;
 
     public static final Atom createAtom(final String strAtom)
     {
@@ -158,7 +158,7 @@ final class Atom extends PrologObject //implements Serializable
         if(obj instanceof Atom)
             return this.equals(obj);//m_strAtom.equals(((Atom)obj).m_strAtom);
         else if(obj instanceof List)
-            return m_strAtom.equals("") && obj == List.NIL;
+            return m_strAtom.isEmpty() && obj == List.NIL;
 
         return false;
     }

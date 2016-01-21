@@ -22,9 +22,8 @@ package com.ugos.jiprolog.engine;
 
 import java.util.Hashtable;
 
-final class BuiltInFactory extends Object
-{
-    static final Hashtable<String, BuiltIn> m_BuiltInTable = new Hashtable<String, BuiltIn>(100);
+final class BuiltInFactory {
+    static final Hashtable<String, BuiltIn> m_BuiltInTable = new Hashtable<>(100);
     private JIPEngine       m_jipEngine   = null;
 
     // Inizializzazione BuiltInTable
@@ -193,11 +192,7 @@ final class BuiltInFactory extends Object
 
             return builtIn;
         }
-        catch(IllegalAccessException ex)
-        {
-            throw new JIPJVMException(ex);
-        }
-        catch(InstantiationException ex)
+        catch(IllegalAccessException | InstantiationException ex)
         {
             throw new JIPJVMException(ex);
         }

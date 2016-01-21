@@ -19,7 +19,8 @@
  */
 
 package com.ugos.jiprolog.engine;
-import java.util.*;
+
+import java.util.Hashtable;
 
 /**
  * JIPXCall is the base class for custom built-in predicates.<br>
@@ -34,7 +35,7 @@ public abstract class JIPXCall
 
     /** Called by xcall/2 to initialize this JIPXCall object
      */
-    protected void init()
+    private void init()
     {
 
     }
@@ -49,7 +50,7 @@ public abstract class JIPXCall
      * @return current running JIPEngine object
      * @see com.ugos.jiprolog.engine.JIPEngine
      */
-    public final JIPEngine getJIPEngine()
+    protected final JIPEngine getJIPEngine()
     {
         return m_builtIn.getJIPEngine();
     }
@@ -57,7 +58,7 @@ public abstract class JIPXCall
    /** Returns the handle of the current running query
      * @return handle of the current running query
      */
-    public final int getQueryHandle()
+    protected final int getQueryHandle()
     {
         return m_builtIn.getQueryHandle();
     }
@@ -66,7 +67,7 @@ public abstract class JIPXCall
      * @return functor of the predicate invoking this instance of JIPXCall class
      * @see com.ugos.jiprolog.engine.JIPFunctor
      */
-    public final JIPFunctor getPredicate()
+    protected final JIPFunctor getPredicate()
     {
         return new JIPFunctor(m_builtIn.getPredicate());
     }

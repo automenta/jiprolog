@@ -20,11 +20,12 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.io.*;
-//#endif
-import java.util.Enumeration;
+import java.io.Serializable;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
+
+//#endif
 
 /**
  * JIPTerm wraps generic prolog terms (atoms, functors, lists, etc.)
@@ -36,7 +37,7 @@ public class JIPTerm  implements Clearable, Serializable, Cloneable
 {
     private final static long serialVersionUID = 300000001L;
 
-    private PrologObject m_obj;
+    private final PrologObject m_obj;
     private Vector       m_varsVect;
 
     /** Checks if this JIPTerm object unifies with the specified term.
@@ -78,11 +79,10 @@ public class JIPTerm  implements Clearable, Serializable, Cloneable
         Hashtable varTable1 = new Hashtable(10);
         if(m_obj.unify(term.m_obj, varTable1))
         {
-            Variable var;
-            Enumeration en = varTable1.elements();
-            while(en.hasMoreElements())
+            Iterator iterator = varTable1.values().iterator();
+            while(iterator.hasNext())
             {
-                var = ((Variable)en.nextElement());
+                Variable var = ((Variable) iterator.next());
                 varsTbl.put(var, new JIPVariable(var));
             }
 
@@ -159,13 +159,13 @@ public class JIPTerm  implements Clearable, Serializable, Cloneable
 
             vars = new JIPVariable[m_varsVect.size()];
 
-            final Enumeration en = m_varsVect.elements();
+            Iterator iterator = m_varsVect.iterator();
 
             //int i = m_varsVect.size();
             int i = 0;
-            while (en.hasMoreElements())
+            while (iterator.hasNext())
             {
-                final Variable var = (Variable)en.nextElement();
+                final Variable var = (Variable) iterator.next();
                 vars[i] = new JIPVariable(var);
                 i++;
             }
@@ -197,7 +197,7 @@ public class JIPTerm  implements Clearable, Serializable, Cloneable
         m_obj = obj;
     }
 
-    private final void extractVariable(final PrologObject term)
+    private void extractVariable(final PrologObject term)
     {
         if(term instanceof ConsCell)
         {
@@ -219,8 +219,9 @@ public class JIPTerm  implements Clearable, Serializable, Cloneable
     {
         if (m_obj instanceof Variable)
         {
-            if(((Variable)m_obj).isBounded())
-                return ((Variable)m_obj).getObject();
+            Variable mm = (Variable) this.m_obj;
+            if(mm.isBounded())
+                return mm.getObject();
         }
 
         return m_obj;
@@ -280,15 +281,13 @@ public class JIPTerm  implements Clearable, Serializable, Cloneable
             return new JIPVariable((Variable)obj);
         if(obj instanceof ConsCell)
             return new JIPCons((ConsCell)obj);
-        if(obj instanceof Clause)
-            return new JIPClause((Clause)obj);
 
         throw JIPRuntimeException.createRuntimeException(25, obj.toString());
     }
 
 	@Override
 	public int hashCode() {
-		return getTerm().hashCode();
+        return m_obj.hashCode();
 	}
 
 }

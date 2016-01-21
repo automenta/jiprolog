@@ -20,7 +20,8 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Stack;
 
 final class RemoveErrorHandler0 extends BuiltIn
 {

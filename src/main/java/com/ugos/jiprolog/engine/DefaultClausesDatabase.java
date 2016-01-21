@@ -21,17 +21,16 @@
 package com.ugos.jiprolog.engine;
 
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Vector;
 
 abstract class DefaultClausesDatabase extends JIPClausesDatabase
 {
-    protected final Vector<Clause> m_clausesVector;
+    final Vector<Clause> m_clausesVector;
 
-    public DefaultClausesDatabase(final String strFunctName, final int nArity)
+    DefaultClausesDatabase(final String strFunctName, final int nArity)
     {
         setFunctor(strFunctName, nArity);
-        m_clausesVector = new Vector<Clause>();
+        m_clausesVector = new Vector<>();
     }
 
     public void setAttributes(final String strAttribs)

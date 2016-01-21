@@ -20,13 +20,9 @@
 
 package com.ugos.jiprolog.extensions.exception;
 
-import java.util.Hashtable;
+import com.ugos.jiprolog.engine.*;
 
-import com.ugos.jiprolog.engine.JIPCons;
-import com.ugos.jiprolog.engine.JIPInstantiationException;
-import com.ugos.jiprolog.engine.JIPTerm;
-import com.ugos.jiprolog.engine.JIPVariable;
-import com.ugos.jiprolog.engine.JIPXCall;
+import java.util.Hashtable;
 
 public class JIPThrow1 extends JIPXCall
 {

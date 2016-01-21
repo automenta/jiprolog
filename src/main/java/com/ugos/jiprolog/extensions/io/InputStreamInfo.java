@@ -1,12 +1,12 @@
 package com.ugos.jiprolog.extensions.io;
 
+import com.ugos.jiprolog.util.StringBuilderEx;
+import com.ugos.jiprolog.util.io.PushbackLineNumberInputStream;
+
 import java.io.IOException;
 import java.util.Enumeration;
 
-import com.ugos.jiprolog.util.io.PushbackLineNumberInputStream;
-import com.ugos.jiprolog.util.StringBuilderEx;
-
-public class InputStreamInfo extends StreamInfo
+class InputStreamInfo extends StreamInfo
 {
     PushbackLineNumberInputStream m_stream;
     Enumeration m_enum;

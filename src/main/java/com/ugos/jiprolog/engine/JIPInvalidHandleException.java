@@ -28,7 +28,7 @@ package com.ugos.jiprolog.engine;
  * Home Page: http://www.ugochirico.com
  * @see com.ugos.jiprolog.engine.JIPEngine
  */
-public class JIPInvalidHandleException extends JIPRuntimeException
+class JIPInvalidHandleException extends JIPRuntimeException
 {
     private static final short ERR_INVALIDHANDLE = 102;
 

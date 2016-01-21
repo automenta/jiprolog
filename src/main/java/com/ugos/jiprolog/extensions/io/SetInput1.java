@@ -20,8 +20,8 @@ package com.ugos.jiprolog.extensions.io;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.InputStream;
+import java.util.Hashtable;
 
 public final class SetInput1 extends JIPXCall
 {

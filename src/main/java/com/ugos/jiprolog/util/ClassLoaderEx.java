@@ -22,7 +22,10 @@
 package com.ugos.jiprolog.util;
 
 //import com.ugos.debug.*;
-import java.io.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * <br>
@@ -154,7 +157,7 @@ public class ClassLoaderEx extends ClassLoader
     * @exception IOException          see java.io.IOException.
     * @return        byte[] Array di byte che rappresenta la classe.
     */
-    protected final byte[] loadClassFromProvider(final String nameClass)
+    private byte[] loadClassFromProvider(final String nameClass)
             throws ClassNotFoundException, IOException
     {
         return m_provider.loadClass(nameClass);

@@ -18,10 +18,12 @@
 
 package com.ugos.jiprolog.extensions.io;
 
-import com.ugos.jiprolog.engine.*;
+import com.ugos.jiprolog.engine.JIPCons;
+import com.ugos.jiprolog.engine.JIPNumber;
+import com.ugos.jiprolog.engine.JIPTerm;
+import com.ugos.jiprolog.engine.JIPXCall;
 
-import java.io.*;
-import java.util.*;
+import java.util.Hashtable;
 
 public final class CurrentInput1 extends JIPXCall
 {

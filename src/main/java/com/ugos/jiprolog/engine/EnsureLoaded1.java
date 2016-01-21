@@ -20,8 +20,7 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.io.*;
-import java.util.*;
+import java.util.Hashtable;
 
 final class EnsureLoaded1 extends BuiltIn
 {

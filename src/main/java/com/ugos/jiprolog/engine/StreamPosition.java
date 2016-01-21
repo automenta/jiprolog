@@ -7,7 +7,7 @@ package com.ugos.jiprolog.engine;
  * @author UgoChirico
  *
  */
-public interface StreamPosition
+interface StreamPosition
 {
 	int getLineNumber();
 }

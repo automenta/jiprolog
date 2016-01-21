@@ -20,46 +20,43 @@
 
 package com.ugos.jiprolog.engine;
 //import com.ugos.debug.*;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Stack;
-import java.util.Vector;
+import java.util.*;
 
 class WAM
 {
     // global db
-    GlobalDB m_globalDB;
+    final GlobalDB m_globalDB;
 
-    String m_strBaseModule;
+    private final String m_strBaseModule;
 
     Node      m_startNode;
     Node      m_curNode;
     Node      m_lastNode;
-    Node      m_rootNode = new Node(ConsCell.NIL, null, null, "none");
+    final Node      m_rootNode = new Node(ConsCell.NIL, null, null, "none");
 
-    JIPEngine m_engine;
+    final JIPEngine m_engine;
 
-    int       m_nBaseCounter;
-    boolean   m_bClosed = false;
+    final int       m_nBaseCounter;
+    private boolean   m_bClosed = false;
 
-    Stack<String> moduleStack = new Stack<String>();
+    Stack<String> moduleStack = new Stack<>();
 
     static final Enumeration s_emptyEnum = new Vector(1).elements();
 
-    Stack<ExceptionListener> exceptionListenerStack = new Stack<ExceptionListener>();
+    final Stack<ExceptionListener> exceptionListenerStack = new Stack<>();
 
 
 	static class Node
     {
-        protected ConsCell     m_injectedBody;
-        protected ConsCell     m_callList;
-        protected Node         m_parent;
-        protected Node         m_previous;
-        protected String       m_strModule;
-        protected int          m_nLevel;
-        protected Node         m_backtrack;
-        protected Enumeration  m_ruleEnum;
-        protected Hashtable    m_varTbl;
+        ConsCell     m_injectedBody;
+        ConsCell     m_callList;
+        final Node         m_parent;
+        final Node         m_previous;
+        String       m_strModule;
+        int          m_nLevel;
+        Node         m_backtrack;
+        Enumeration  m_ruleEnum;
+        Hashtable    m_varTbl;
 
         Node(final ConsCell callList, final Node parent, final Node previous, final String strModule)
         {
@@ -84,9 +81,9 @@ class WAM
             if(m_varTbl != null)
             {
 //                System.out.println(m_varTbl);
-                final Enumeration en = m_varTbl.elements();
-                while (en.hasMoreElements())
-                        ((Clearable)en.nextElement()).clear();
+                Iterator iterator = m_varTbl.values().iterator();
+                while (iterator.hasNext())
+                        ((Clearable) iterator.next()).clear();
                 m_varTbl = null;
             }
         }
@@ -152,7 +149,7 @@ class WAM
             throw new JIPIsRunningException();
 
         // se   stato chiusa con closeQuery o non   mai partita lancia eccezione
-        if(isClosed() || isNeverRun())
+        if(m_bClosed || isNeverRun())
             throw new JIPQueryClosedException();
 
         // backtrack
@@ -172,7 +169,7 @@ class WAM
     boolean nextSolution()
         throws JIPIsRunningException, JIPQueryClosedException
     {
-        if(isClosed() || isNeverRun())
+        if(m_bClosed || isNeverRun())
             throw new JIPQueryClosedException();
 
         if(isRunning())
@@ -196,7 +193,7 @@ class WAM
     }
 
     // la WAM sta eseguendo il metodo run
-    final boolean isRunning()
+    private boolean isRunning()
     {
         return m_curNode != null;
     }
@@ -214,9 +211,9 @@ class WAM
     }
 
     // la WAM   in attesa di ricevere nextSolution o closeQuery
-    final boolean isWaiting()
+    private boolean isWaiting()
     {
-        return !isNeverRun() && !isRunning() && !isClosed();
+        return !isNeverRun() && !isRunning() && !m_bClosed;
     }
 
     final void cut()
@@ -264,7 +261,6 @@ class WAM
 
     Node backtrack(Node curNode)
     {
-        Node backtrack;
         while(curNode != null)
         {
 //            System.out.println("redo: " + curNode.getGoal());
@@ -272,7 +268,7 @@ class WAM
             // risale l'albero saltando i punti di backtracking
             if(curNode.m_backtrack != null)
             {
-                backtrack = curNode.m_backtrack;
+                Node backtrack = curNode.m_backtrack;
                 do
                 {
                     // Azzera le variabili eventualmente istanziate al livello corrente
@@ -331,15 +327,14 @@ class WAM
     boolean run(Node curNode)
     {
         PrologRule  rule = null;
-        Clause      clause = null;
-        boolean     bUnify = false;
-        Hashtable   varTbl = null;
-        Node        newNode = null;
-        Node        parentNode;
         int         nCallCount = m_nBaseCounter;
 
         try
         {
+            Node newNode = null;
+            Hashtable varTbl = null;
+            boolean bUnify = false;
+            Clause clause = null;
             while(curNode != null)
             {
                 m_curNode = curNode;
@@ -452,7 +447,7 @@ class WAM
                     {
                         newNode = null;
 
-                        parentNode = curNode.m_parent;
+                        Node parentNode = curNode.m_parent;
 
                         while(newNode == null && parentNode != null)
                         {

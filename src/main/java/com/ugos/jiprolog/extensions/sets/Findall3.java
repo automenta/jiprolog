@@ -22,7 +22,9 @@ package com.ugos.jiprolog.extensions.sets;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
 
 public class Findall3 extends JIPXCall
 {
@@ -54,7 +56,7 @@ public class Findall3 extends JIPXCall
 
         final Vector solVect = collect(query);
         JIPTerm sol;
-        Enumeration en;
+
         JIPList solList = null;
         for(int i = 0; i < solVect.size(); i++)
         {
@@ -62,9 +64,9 @@ public class Findall3 extends JIPXCall
             if(query.unify(sol, varsTbl))
             {
                 solList = JIPList.create((JIPTerm)term.clone(), solList);
-                en = varsTbl.elements();
-                while(en.hasMoreElements())
-                    ((JIPTerm)en.nextElement()).clear();
+                Iterator iterator = varsTbl.values().iterator();
+                while(iterator.hasNext())
+                    ((JIPTerm) iterator.next()).clear();
             }
             else
             {
@@ -85,7 +87,7 @@ public class Findall3 extends JIPXCall
         return m_query == null;  // never started
     }
 
-    protected final Vector collect(JIPTerm query)
+    final Vector collect(JIPTerm query)
     {
         //System.out.println("query " + query);
 

@@ -33,7 +33,7 @@ class ParserReader extends Reader
     private boolean m_bEOF;
 //    private int m_nRead;
 
-    private PushbackLineNumberInputStream m_ins;
+    private final PushbackLineNumberInputStream m_ins;
 
     //private ByteArrayOutputStream m_outs;
 
@@ -66,8 +66,7 @@ class ParserReader extends Reader
 
     public final int read() throws IOException
     {
-        int c;
-//        if(m_bPushedBack)
+        //        if(m_bPushedBack)
 //        {
 //            //System.out.println("Pushed Back " + (char)m_nLastChar);
 //            c = m_nLastChar;
@@ -75,7 +74,7 @@ class ParserReader extends Reader
 //        }
 //        else
 //        {
-            c = m_ins.read();
+        int c = m_ins.read();
 //            if (m_bSkipLF)
 //            {
 //                if (c == '\n')

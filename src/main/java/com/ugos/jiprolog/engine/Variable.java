@@ -21,9 +21,10 @@
 package com.ugos.jiprolog.engine;
 
 //import java.io.Serializable;
-import java.util.Hashtable;
 
 import com.ugos.jiprolog.util.StringBuilderEx;
+
+import java.util.Hashtable;
 
 final class Variable extends PrologObject//Serializable
 {
@@ -37,7 +38,7 @@ final class Variable extends PrologObject//Serializable
     private static final StringBuilderEx sbANONYMOUS = new StringBuilderEx().append(ANONYMOUS).setInitial();
     private static final StringBuilderEx sbSHADOW = new StringBuilderEx().append(SHADOW).setInitial();
 
-    private String       m_strName;
+    private final String       m_strName;
     private PrologObject m_object;
 //    private long m_address;
 
@@ -290,8 +291,9 @@ final class Variable extends PrologObject//Serializable
         {
     		if (((Variable)obj).isBounded())
     			return false;
-    		else
-    			return lastVariable().getName().compareTo(((Variable)obj).lastVariable().getName()) == 0;//lastVariable().getAddress() == ((Variable)obj).lastVariable().getAddress();
+    		else {
+                return lastVariable().getName().compareTo(((Variable) obj).lastVariable().m_strName) == 0;//lastVariable().getAddress() == ((Variable)obj).lastVariable().getAddress();
+            }
 
         }
 

@@ -20,12 +20,15 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
 
 final class CurrentFunctor2 extends BuiltIn
 {
     private Enumeration m_enum = null;
     private boolean m_bSystem = true;
+    private Iterator<String> iterator;
 
     @Override
     public final boolean unify(final Hashtable<Variable, Variable> varsTbl)
@@ -59,11 +62,11 @@ final class CurrentFunctor2 extends BuiltIn
 
                 if(getParam(1).unifiable(funcName) &&
                    getParam(2).unifiable(arity) &&
-				   !(getJIPEngine().getGlobalDB().isSystem(new Functor(new StringBuilder(funcName.getName()).append("/").append(arity).toString(), null))))
+				   !(getJIPEngine().getGlobalDB().isSystem(new Functor(new StringBuilder(funcName.getName()).append('/').append(arity).toString(), null))))
                 {
                     if(!m_enum.hasMoreElements())
                     {
-                        m_enum = BuiltInFactory.m_BuiltInTable.keys();
+                        iterator = BuiltInFactory.m_BuiltInTable.keySet().iterator();
                         m_bSystem = false;
                     }
 
@@ -75,15 +78,15 @@ final class CurrentFunctor2 extends BuiltIn
             }
 
             m_bSystem = false;
-            m_enum = BuiltInFactory.m_BuiltInTable.keys();
+            m_enum = BuiltInFactory.m_BuiltInTable.keys();Iterator iterator = BuiltInFactory.m_BuiltInTable.keySet().iterator();
 
             return unify(varsTbl);
         }
         else
         {
-            while(m_enum.hasMoreElements())
+            while(iterator.hasNext())
             {
-                final String strPredDef = (String)m_enum.nextElement();
+                final String strPredDef = (String) iterator.next();
 
                 int nPos = strPredDef.lastIndexOf('/');
 
@@ -92,7 +95,7 @@ final class CurrentFunctor2 extends BuiltIn
 
                 if(getParam(1).unify(funcName, varsTbl) &&
                    getParam(2).unify(arity, varsTbl) &&
-				   !(getJIPEngine().getGlobalDB().isSystem(new Functor(new StringBuilder(funcName.getName()).append("/").append(arity).toString(), null))))
+				   !(getJIPEngine().getGlobalDB().isSystem(new Functor(new StringBuilder(funcName.getName()).append('/').append(arity).toString(), null))))
                 {
                     return true;
                 }
@@ -105,6 +108,6 @@ final class CurrentFunctor2 extends BuiltIn
     @Override
     public final boolean hasMoreChoicePoints()
     {
-        return m_enum == null || m_enum.hasMoreElements();
+        return m_enum == null || iterator.hasNext();
     }
 }

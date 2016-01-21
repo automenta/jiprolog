@@ -23,11 +23,12 @@ package com.ugos.jiprolog.extensions.terms;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
 public class FreeVariables2 extends JIPXCall
 {
-	 Hashtable<String, JIPVariable> vartbl = new Hashtable<String, JIPVariable>();
+	 private final Hashtable<String, JIPVariable> vartbl = new Hashtable<>();
 
     public final boolean unify(final JIPCons input, Hashtable varsTbl)
     {
@@ -47,7 +48,7 @@ public class FreeVariables2 extends JIPXCall
         		throw new JIPTypeException(JIPTypeException.LIST, list);
     	}
 
-        Vector<JIPVariable> varsVect = new Vector<JIPVariable>();
+        Vector<JIPVariable> varsVect = new Vector<>();
 
         addVariables(term, varsVect);
 

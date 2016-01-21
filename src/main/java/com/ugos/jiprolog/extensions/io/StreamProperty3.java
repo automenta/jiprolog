@@ -21,15 +21,18 @@ package com.ugos.jiprolog.extensions.io;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
 
 public final class StreamProperty3 extends JIPXCall
 {
 	private Enumeration<Object> termEnum;
 
 	private JIPAtom op;
+	private Iterator<Object> iterator;
 
-//	xcall('com.ugos.jiprolog.extensions.io.StreamProperty2', [set, '#123', file_name(ugo)]).
+	//	xcall('com.ugos.jiprolog.extensions.io.StreamProperty2', [set, '#123', file_name(ugo)]).
     public final boolean unify(final JIPCons params, Hashtable<JIPVariable, JIPVariable> varsTbl)
     {
         // get first parameter
@@ -64,12 +67,17 @@ public final class StreamProperty3 extends JIPXCall
         	{
         		String key = ((JIPFunctor)prop1).getName();
 
-        		if(key.equals("alias"))
-        			JIPio.setStreamAlias(streamInfo, ((JIPFunctor)prop1).getParams().getNth(1).toString());
-        		else if(key.equals("type"))
-        			JIPio.setStreamType(streamInfo, ((JIPFunctor)prop1).getParams().getNth(1).toString());
-        		else
-            		streamInfo.getProperties().setProperty(key, prop1.toString());
+				switch (key) {
+					case "alias":
+						JIPio.setStreamAlias(streamInfo, ((JIPFunctor) prop1).getParams().getNth(1).toString());
+						break;
+					case "type":
+						JIPio.setStreamType(streamInfo, ((JIPFunctor) prop1).getParams().getNth(1).toString());
+						break;
+					default:
+						streamInfo.getProperties().setProperty(key, prop1.toString());
+						break;
+				}
         	}
         	else
                 throw new JIPTypeException(JIPTypeException.COMPOUND, prop1);
@@ -96,9 +104,11 @@ public final class StreamProperty3 extends JIPXCall
 		        if(termEnum == null)
 		        	termEnum = streamInfo.getProperties().keys();
 
-		        while(termEnum.hasMoreElements())
+				iterator = streamInfo.getProperties().keySet().iterator();
+
+				while(iterator.hasNext())
 		        {
-		        	String key = (String)termEnum.nextElement();
+		        	String key = (String) iterator.next();
 		        	String sterm = streamInfo.getProperties().getProperty(key);
 
 //		        	System.out.println("key " + key);
@@ -151,7 +161,7 @@ public final class StreamProperty3 extends JIPXCall
 
     public boolean hasMoreChoicePoints()
     {
-        return termEnum != null && termEnum.hasMoreElements();
+        return termEnum != null && iterator.hasNext();
     }
 }
 

@@ -20,9 +20,11 @@
 
 package com.ugos.jiprolog.util.io;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PushbackInputStream;
 
-public class PushBackInputStream extends PushbackInputStream// FilterInputStream
+class PushBackInputStream extends PushbackInputStream// FilterInputStream
 {
 //	int pushBack = -1;
     private boolean m_bSkipLF;
@@ -87,9 +89,8 @@ public class PushBackInputStream extends PushbackInputStream// FilterInputStream
     public final int read() throws IOException
     {
 
-        int c;
-            c = super.read();
-            if (m_bSkipLF)
+        int c = super.read();
+        if (m_bSkipLF)
             {
                 if (c == '\n')
                 {

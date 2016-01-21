@@ -33,9 +33,9 @@ text_stream
 public class JIPPermissionException extends JIPRuntimeException
 {
 	private static final long serialVersionUID = -1401367774721127591L;
-	private String operation;
-	private String permission;
-	private PrologObject culprit;
+	private final String operation;
+	private final String permission;
+	private final PrologObject culprit;
 
 	JIPPermissionException(String operation, String permission, PrologObject culprit, JIPEngine engine)
 	{

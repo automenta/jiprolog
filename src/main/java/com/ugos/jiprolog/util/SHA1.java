@@ -6,7 +6,7 @@ package com.ugos.jiprolog.util;
  * @author  Ugo Chirico <ugo.chirico@ugosweb.com>
  * Customized and ported on J2ME
  */
-public final class SHA1
+final class SHA1
 {
    //  Length of the final hash (in bytes).
    private static final int HASH_LENGTH = 20;
@@ -15,7 +15,7 @@ public final class SHA1
    private static final int DATA_LENGTH = 64;
 
    //  The buffer used to store the last incomplete block.
-   private byte[] buffer;
+   private final byte[] buffer;
 
    //  The number of bytes currently stored in buffer[].
    private int buffered;
@@ -23,16 +23,16 @@ public final class SHA1
    //  The number of bytes that have been input to the digest.
    private long count;
 
-   private int[] digest;
-   private int[] data;
-   private int[] z;
-   private byte[] tmp;
+   private final int[] digest;
+   private final int[] data;
+   private final int[] z;
+   private final byte[] tmp;
 
 
    /**
     * Constructs a SHA-1 message digest.
     */
-  public  SHA1()
+   private SHA1()
    {
       buffer = new byte[DATA_LENGTH];
       digest = new int[HASH_LENGTH/4];
@@ -46,7 +46,7 @@ public final class SHA1
    *  This method accepts a string and returns a SHA-1 secure
    *  one-way hash value of that string, as a byte array.
    */
-  public static byte[] hash(byte[] input)
+  private static byte[] hash(byte... input)
   {
       SHA1 sha1 = new SHA1();
       return sha1.getSHA1Hash(input);
@@ -71,14 +71,14 @@ public final class SHA1
     *  This method accepts a byte array and returns a SHA-1 secure
     *  one-way hash value of it, as a byte array.
     */
-   public  byte[] getSHA1Hash(byte[] input)
+   private byte[] getSHA1Hash(byte... input)
    {
       engineReset();
       engineUpdate(input,0,input.length);
       return engineDigest();
    }
 
-  	public void update(byte[] input)
+  	public void update(byte... input)
   	{
   	    engineUpdate(input,0,input.length);
   	}
@@ -133,7 +133,7 @@ public final class SHA1
     * @param offset    the start of the data in the array.
     * @param length    the number of bytes of data to add.
     */
-   void engineUpdate(byte[] data, int offset, int length)
+   private void engineUpdate(byte[] data, int offset, int length)
    {
       count += length;
 
@@ -161,7 +161,7 @@ public final class SHA1
    /**
     *  Calculates the final digest.
     */
-   byte[] engineDigest()
+   private byte[] engineDigest()
    {
       return engineDigest(buffer, buffered);
    }
@@ -220,7 +220,7 @@ public final class SHA1
    /**
     *  Transform (add) a data block to the message digest.
     */
-   private void engineTransform(byte[] in)
+   private void engineTransform(byte... in)
    {
       byte2int(in, 0, data, 0, DATA_LENGTH/4);
       transform(data);
@@ -250,7 +250,7 @@ public final class SHA1
    private static int f3(int a, int b, int c) { return ((a&b)|(c&(a|b))) + 0x8F1BBCDC; }
    private static int f4(int a, int b, int c) { return (a^b^c) + 0xCA62C1D6; }
 
-   private void transform (int[] X)
+   private void transform (int... X)
    {
       int A = digest[0];
       int B = digest[1];
@@ -259,8 +259,7 @@ public final class SHA1
       int E = digest[4];
 
       int W[] = z;
-      for (int i=0; i<16; i++)
-         W[i] = X[i];
+       System.arraycopy(X, 0, W, 0, 16);
 
       for (int i=16; i<80; i++)
       {

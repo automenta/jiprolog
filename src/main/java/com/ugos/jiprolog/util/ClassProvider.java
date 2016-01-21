@@ -21,22 +21,22 @@
 
 package com.ugos.jiprolog.util;
 
-import java.util.*;
-import java.io.*;
+import java.io.IOException;
+import java.util.Hashtable;
 
 /**
  * <br>
  * Questa classe implementa un provider astratto di classi
  * @author       Ugo Chirico www.ugosweb.com
  */
-public abstract class ClassProvider
+abstract class ClassProvider
 {
     final private Hashtable m_cache;
 
     /**
     * Costruttore.
     */
-    public ClassProvider()
+    ClassProvider()
     {
         m_cache = new Hashtable();
     }

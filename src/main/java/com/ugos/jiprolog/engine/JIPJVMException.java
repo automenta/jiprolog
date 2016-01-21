@@ -29,7 +29,7 @@ package com.ugos.jiprolog.engine;
  */
 public class JIPJVMException extends JIPRuntimeException
 {
-    private Throwable m_ex;
+    private final Throwable m_ex;
 
     /** Constructs a new JIPJVMException
      * @param ex the JVM exception thrown

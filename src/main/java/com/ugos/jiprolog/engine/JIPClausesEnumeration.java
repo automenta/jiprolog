@@ -20,8 +20,6 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.awt.Frame;
-
 import java.util.Enumeration;
 
 
@@ -41,12 +39,12 @@ public abstract class JIPClausesEnumeration implements Enumeration
 {
     //private final String m_strFuncName;
     //private final int    m_nArity;
-    private JIPClausesDatabase m_db;
+    private final JIPClausesDatabase m_db;
     /** Constructs a clauses enumeration from an instance of JIPClausesDatabase
      * @param db Tha JIPClausesDatabase related to this enumeration
      * @see com.ugos.jiprolog.engine.JIPClausesDatabase
       */
-    public JIPClausesEnumeration(final JIPClausesDatabase db)
+    protected JIPClausesEnumeration(final JIPClausesDatabase db)
     {
         m_db = db;
         //m_nArity      = db.getArity();
@@ -65,7 +63,7 @@ public abstract class JIPClausesEnumeration implements Enumeration
      * @return the next clause in the enumeration.
      * @see com.ugos.jiprolog.engine.JIPClause
      */
-    public abstract JIPClause nextClause();
+    protected abstract JIPClause nextClause();
     
     /** Gets the next element of the enumeration. <br>
      * It is called by internal ASM and should not be called by developers.
@@ -94,7 +92,7 @@ public abstract class JIPClausesEnumeration implements Enumeration
     
     /** Gets the database associated to this enumeration
       */
-    public final JIPClausesDatabase getDatabase()
+    protected final JIPClausesDatabase getDatabase()
     {
         return m_db;
     }

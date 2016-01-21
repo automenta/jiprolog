@@ -12,11 +12,11 @@ import java.util.Arrays;
 public class StringBuilderEx implements Appendable, CharSequence
 {
 
-    char[] value;
+    private char[] value;
 
-    int count;
+    private int count;
 
-    int initialCount;
+    private int initialCount;
 
     public StringBuilderEx() {
     	value = new char[0];
@@ -24,7 +24,7 @@ public class StringBuilderEx implements Appendable, CharSequence
     	count = 0;
     }
 
-    public StringBuilderEx(int capacity) {
+    private StringBuilderEx(int capacity) {
         value = new char[capacity];
         initialCount = 0;
     }
@@ -62,12 +62,12 @@ public class StringBuilderEx implements Appendable, CharSequence
     	return this;
     }
 
-    public void ensureCapacity(int minimumCapacity) {
+    private void ensureCapacity(int minimumCapacity) {
         if (minimumCapacity - value.length > 0)
             expandCapacity(minimumCapacity);
     }
 
-    void expandCapacity(int minimumCapacity) {
+    private void expandCapacity(int minimumCapacity) {
         int newCapacity = value.length * 2 + 2;
         if (newCapacity - minimumCapacity < 0)
             newCapacity = minimumCapacity;
@@ -137,7 +137,7 @@ public class StringBuilderEx implements Appendable, CharSequence
         return this;
     }
 
-    public StringBuilderEx append(StringBuffer sb) {
+    private StringBuilderEx append(StringBuffer sb) {
         if (sb == null)
             return append("null");
         int len = sb.length();
@@ -174,7 +174,7 @@ public class StringBuilderEx implements Appendable, CharSequence
     }
 
 
-    public StringBuilderEx append(char[] str) {
+    public StringBuilderEx append(char... str) {
         int len = str.length;
         ensureCapacity(count + len);
         System.arraycopy(str, 0, value, count, len);
@@ -306,7 +306,7 @@ public class StringBuilderEx implements Appendable, CharSequence
         return substring(start, end);
     }
 
-    public String substring(int start, int end) {
+    private String substring(int start, int end) {
         if (start < 0)
             throw new StringIndexOutOfBoundsException(start);
         if (end > count)
@@ -337,7 +337,7 @@ public class StringBuilderEx implements Appendable, CharSequence
         return insert(offset, String.valueOf(obj));
     }
 
-    public StringBuilderEx insert(int offset, String str) {
+    private StringBuilderEx insert(int offset, String str) {
         if ((offset < 0) || (offset > length()))
             throw new StringIndexOutOfBoundsException(offset);
         if (str == null)
@@ -351,7 +351,7 @@ public class StringBuilderEx implements Appendable, CharSequence
         return this;
     }
 
-    public StringBuilderEx insert(int offset, char[] str) {
+    public StringBuilderEx insert(int offset, char... str) {
         if ((offset < 0) || (offset > length()))
             throw new StringIndexOutOfBoundsException(offset);
         int len = str.length;
@@ -370,8 +370,8 @@ public class StringBuilderEx implements Appendable, CharSequence
         return this.insert(dstOffset, s, 0, s.length());
     }
 
-     public StringBuilderEx insert(int dstOffset, CharSequence s,
-                                         int start, int end) {
+     private StringBuilderEx insert(int dstOffset, CharSequence s,
+                                    int start, int end) {
         if (s == null)
             s = "null";
         if ((dstOffset < 0) || (dstOffset > this.length()))
@@ -422,7 +422,7 @@ public class StringBuilderEx implements Appendable, CharSequence
         return indexOf(str, 0);
     }
 
-    public int indexOf(String str, int fromIndex) {
+    private int indexOf(String str, int fromIndex) {
         return indexOf(value, 0, count,
                               str.toCharArray(), 0, str.length(), fromIndex);
     }
@@ -431,7 +431,7 @@ public class StringBuilderEx implements Appendable, CharSequence
         return lastIndexOf(str, count);
     }
 
-    public int lastIndexOf(String str, int fromIndex) {
+    private int lastIndexOf(String str, int fromIndex) {
         return lastIndexOf(value, 0, count,
                               str.toCharArray(), 0, str.length(), fromIndex);
     }
@@ -526,8 +526,7 @@ public class StringBuilderEx implements Appendable, CharSequence
         return 19;
     }
 
-    private static void getChars(int i, int index, char[] buf) {
-        int q, r;
+    private static void getChars(int i, int index, char... buf) {
         int charPos = index;
         char sign = 0;
 
@@ -537,6 +536,8 @@ public class StringBuilderEx implements Appendable, CharSequence
         }
 
         // Generate two digits per iteration
+        int r;
+        int q;
         while (i >= 65536) {
             q = i / 100;
         // really: r = i - (q * 100);
@@ -560,9 +561,7 @@ public class StringBuilderEx implements Appendable, CharSequence
         }
     }
 
-    private static void getChars(long i, int index, char[] buf) {
-        long q;
-        int r;
+    private static void getChars(long i, int index, char... buf) {
         int charPos = index;
         char sign = 0;
 
@@ -572,8 +571,9 @@ public class StringBuilderEx implements Appendable, CharSequence
         }
 
         // Get 2 digits/iteration using longs until quotient fits into an int
+        int r;
         while (i > Integer.MAX_VALUE) {
-            q = i / 100;
+            long q = i / 100;
             // really: r = i - (q * 100);
             r = (int)(i - ((q << 6) + (q << 5) + (q << 2)));
             i = q;

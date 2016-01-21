@@ -21,12 +21,13 @@
 package com.ugos.jiprolog.engine;
 
 //import com.ugos.debug.*;
-import java.util.*;
+
+import java.util.Hashtable;
 
 final class XCall2 extends BuiltIn
 {
     private JIPXCall      m_exObj;
-    private static Hashtable<String, Class> classTable = new Hashtable<String, Class>();
+    private static final Hashtable<String, Class> classTable = new Hashtable<>();
 
     // Called by prolog engine when it tries to unify the goal
     // (in this case the goal is a call to a built in predicate)
@@ -60,17 +61,16 @@ final class XCall2 extends BuiltIn
 
         JIPCons exParams = new JIPCons(((List)params).getConsCell());
 
-        Hashtable<JIPVariable, JIPVariable> jipVarsTable = new Hashtable<JIPVariable, JIPVariable>();
+        Hashtable<JIPVariable, JIPVariable> jipVarsTable = new Hashtable<>();
         // Invoke JIPXCall class
         boolean unify = m_exObj.unify(exParams, jipVarsTable);
 
         if(unify)
         {
-        	Variable var;
-        	for(JIPVariable jvar : jipVarsTable.values())
+            for(JIPVariable jvar : jipVarsTable.values())
         	{
-        		var = (Variable)jvar.getTerm();
-        		varsTbl.put(var, var);
+                Variable var = (Variable) jvar.getTerm();
+                varsTbl.put(var, var);
         	}
         }
 
@@ -86,7 +86,7 @@ final class XCall2 extends BuiltIn
 
     // Create an instance of JIPXCall class
     @SuppressWarnings("rawtypes")
-	protected static final JIPXCall createXCall(String strXClassName)
+    private static JIPXCall createXCall(String strXClassName)
     {
         try
         {
@@ -97,7 +97,6 @@ final class XCall2 extends BuiltIn
 //                strXClassName = strXClassName.substring(1, strXClassName.length() - 1);
 //            }
 
-            JIPXCall exObj;
             Class xclass;
             if(classTable.containsKey(strXClassName))
             {
@@ -114,27 +113,14 @@ final class XCall2 extends BuiltIn
             	classTable.put(strXClassName, xclass);
             }
 
-            exObj = (JIPXCall)xclass.newInstance();
+            JIPXCall exObj = (JIPXCall) xclass.newInstance();
 
             return exObj;
         }
-        catch(ClassNotFoundException ex)
+        catch(ClassNotFoundException | ClassCastException | InstantiationException | IllegalAccessException ex)
         {
         	throw JIPExistenceException.createProcedureException(Atom.createAtom(strXClassName));
-        }
-        catch(IllegalAccessException ex)
-        {
-        	throw JIPExistenceException.createProcedureException(Atom.createAtom(strXClassName));
-        }
-        catch(InstantiationException ex)
-        {
-        	throw JIPExistenceException.createProcedureException(Atom.createAtom(strXClassName));
-        }
-        catch(ClassCastException ex)
-        {
-        	throw JIPExistenceException.createProcedureException(Atom.createAtom(strXClassName));
-        }
-        catch(NoClassDefFoundError ex)
+        } catch(NoClassDefFoundError ex)
         {
         	ex.printStackTrace();
         	throw JIPExistenceException.createProcedureException(Atom.createAtom(strXClassName));

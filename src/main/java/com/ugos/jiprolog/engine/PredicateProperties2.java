@@ -20,7 +20,7 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.*;
+import java.util.Hashtable;
 
 final class PredicateProperties2 extends BuiltIn
 {
@@ -97,9 +97,6 @@ final class PredicateProperties2 extends BuiltIn
                 propsList = new List(Atom.createAtom("interpreted"), propsList);
             }
         }
-
-        if(propsList == null)
-            return false;
 
         return getParam(2).unify(propsList, varsTbl);
     }

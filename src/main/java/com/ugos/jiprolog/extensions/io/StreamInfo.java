@@ -1,24 +1,21 @@
 package com.ugos.jiprolog.extensions.io;
 
 import java.util.Properties;
-import java.util.StringTokenizer;
-
-import com.ugos.jiprolog.engine.JIPTermParser;
 
 
 public class StreamInfo
 {
     private String name;
     private int handle;
-	protected Properties properties = new Properties();
-	static int MAX_VALUE = Integer.MAX_VALUE - 1;
+	final Properties properties = new Properties();
+	static final int MAX_VALUE = Integer.MAX_VALUE - 1;
 	private boolean binary;
 //	public StreamInfo(String name)
 //	{
 //		this(name, "#" + name.hashCode());
 //	}
 
-	public StreamInfo(String name, int handle)
+	StreamInfo(String name, int handle)
 	{
 		this.name = name;
 		this.handle = handle;
@@ -28,7 +25,7 @@ public class StreamInfo
 		properties.setProperty("type", "type(text)");
 		properties.setProperty("end_of_stream", "end_of_stream(not)");
 
-		setBinary(false);
+		this.binary = false;
 	}
 
 	public String getName()

@@ -21,14 +21,16 @@ package com.ugos.jiprolog.extensions.io;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Hashtable;
+import java.util.Properties;
 
 public final class GetByte2 extends JIPXCall
 {
     private int streamHandle;
 
-    protected final int readNextChar(InputStream ins)
+    private static int readNextChar(InputStream ins)
     {
         try
         {

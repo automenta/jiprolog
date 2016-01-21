@@ -28,7 +28,7 @@ package com.ugos.jiprolog.engine;
   * Home Page: http://www.ugochirico.com
   * @see com.ugos.jiprolog.engine.JIPEvent
   */
-public interface JIPEventListener
+interface JIPEventListener
 {
    /** Notifies a Solution event
     * @param e JIPEvent occurred

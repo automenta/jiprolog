@@ -20,7 +20,8 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 final class CurrentOp3 extends BuiltIn
 {
@@ -78,19 +79,16 @@ final class CurrentOp3 extends BuiltIn
 
         if(m_supOp != null)
         {
-            if(m_supOp != null)
-            {
-                final ConsCell first =
-                    new ConsCell(Expression.createNumber(m_supOp.getPrecedence()),
-                                 new ConsCell(Atom.createAtom(m_supOp.getAssoc()),
-                                              new ConsCell(Atom.createAtom(m_supOp.getName()), null)));
+            final ConsCell first =
+                new ConsCell(Expression.createNumber(m_supOp.getPrecedence()),
+                             new ConsCell(Atom.createAtom(m_supOp.getAssoc()),
+                                          new ConsCell(Atom.createAtom(m_supOp.getName()), null)));
 
-                if(first.unify(m_second, varsTbl))
-                {
-                    m_curOp = m_supOp;
-                    m_supOp = null;
-                    return true;
-                }
+            if(first.unify(m_second, varsTbl))
+            {
+                m_curOp = m_supOp;
+                m_supOp = null;
+                return true;
             }
         }
 

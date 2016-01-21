@@ -67,7 +67,7 @@ public class Call1 extends BuiltIn {
 		return false;//wam != null;
 	}
 
-	protected PrologObject getGoal(PrologObject param)
+	static PrologObject getGoal(PrologObject param)
 	{
 		PrologObject goal;
 
@@ -108,7 +108,7 @@ public class Call1 extends BuiltIn {
 		return goal;
 	}
 
-	protected final WAM getNewWAM()
+	final WAM getNewWAM()
     {
 		WAM wam = getWAM();
         if(wam instanceof WAMTrace)

@@ -25,7 +25,7 @@ final class Operator
 {
     public int    m_nPrecedence;
     public String m_strAssoc;
-    public String m_strName;
+    private final String m_strName;
     public Operator m_suppOp;
 
     public Operator(final int nPrec, final String strAssoc, final String strName)
@@ -137,6 +137,6 @@ final class Operator
 
     public final String toString()
     {
-        return getName();
+        return m_strName;
     }
 }

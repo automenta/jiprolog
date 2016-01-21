@@ -27,13 +27,16 @@ package com.ugos.jiprolog.extensions.database;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
 
 public class JDBCClausesDatabase extends JIPClausesDatabase
 {
-    public final static String SEPARATOR = ",";
-    public final static String QUOTE = "'";
+    private final static String SEPARATOR = ",";
+    private final static String QUOTE = "'";
 
     private String      m_strTableName  = null;
     private String      m_strSQLQuery   = null;
@@ -42,20 +45,20 @@ public class JDBCClausesDatabase extends JIPClausesDatabase
     private String      m_strPassword        = null;
 
     private ResultSetMetaData m_rsmd       = null;
-    private Statement         m_stmt       = null;
+    private final Statement         m_stmt       = null;
     private ResultSet         m_rs         = null;
 
-    private List<JIPClause> clauseList;
+    private final List<JIPClause> clauseList;
 
 
-    private static Hashtable<String, Connection> s_connectionTable = new Hashtable<String, Connection>();
+    private static final Hashtable<String, Connection> s_connectionTable = new Hashtable<>();
 
     public JDBCClausesDatabase()
     {
-    	clauseList = new ArrayList<JIPClause>();
+    	clauseList = new ArrayList<>();
     }
 
-    public final Connection getConnection()
+    private Connection getConnection()
     {
         return s_connectionTable.get(m_strURL);
     }
@@ -65,7 +68,7 @@ public class JDBCClausesDatabase extends JIPClausesDatabase
         return m_strURL;
     }
 
-    public final String getSQLQuery()
+    private String getSQLQuery()
     {
         if(m_strTableName != null)
             return "SELECT * FROM " + m_strTableName;
@@ -125,7 +128,7 @@ public class JDBCClausesDatabase extends JIPClausesDatabase
         else if(strQuery.toUpperCase().startsWith("SQL:"))
         {
             m_strSQLQuery = strQuery.substring(nBegin, strQuery.length());
-            if(m_strSQLQuery.toUpperCase().indexOf("SELECT") < 0)
+            if(!m_strSQLQuery.toUpperCase().contains("SELECT"))
                 throw new JIPRuntimeException(JIPRuntimeException.ID_USER_EXCEPTION + 12, "The SQL specified does not seem a SELECT query: " + m_strSQLQuery);
         }
         else
@@ -165,9 +168,9 @@ public class JDBCClausesDatabase extends JIPClausesDatabase
         }
 
         // Establish connection.
-        Connection connection;
         try
         {
+            Connection connection;
             if(!s_connectionTable.containsKey(m_strURL))
             {
                 if(m_strUser == null)
@@ -235,7 +238,6 @@ public class JDBCClausesDatabase extends JIPClausesDatabase
 
         // It is attached directly to a table
 
-        String strCol = null;
         // Prepare row from clause
         try
         {
@@ -248,6 +250,7 @@ public class JDBCClausesDatabase extends JIPClausesDatabase
             JIPCons tail = params;
             String strVal = null;
             int i = 0;
+            String strCol = null;
             while(tail != null)
             {
                 i++;
@@ -293,7 +296,7 @@ public class JDBCClausesDatabase extends JIPClausesDatabase
 
                 if(JDBCClausesDatabase.isString(m_rsmd.getColumnType(i)))
                 {
-                    strVal = "'" + strVal + "'";
+                    strVal = '\'' + strVal + '\'';
                 }
 
                 strCol += strVal;
@@ -345,8 +348,6 @@ public class JDBCClausesDatabase extends JIPClausesDatabase
             return false;
 
         // Prepare WHERE statement
-        String strWhere = null;
-        String strColName;
 
         // extract the functor
         JIPFunctor fun = nextClause.getHead();
@@ -357,12 +358,13 @@ public class JDBCClausesDatabase extends JIPClausesDatabase
         try
         {
             int i = 1;
+            String strWhere = null;
             while(tail != null)
             {
-                String strVal = null;
-                strColName = m_rsmd.getColumnName(i);
+                String strColName = m_rsmd.getColumnName(i);
                 JIPTerm head = tail.getHead();
                 // if is an unbounded variable DON'T ADD IT because it always match
+                String strVal = null;
                 if(head instanceof JIPVariable)
                 {
                     if (!((JIPVariable)head).isBounded())
@@ -384,7 +386,7 @@ public class JDBCClausesDatabase extends JIPClausesDatabase
 
                     if(JDBCClausesDatabase.isString(m_rsmd.getColumnType(i)))
                     {
-                        strVal = "'" + strVal + "'";
+                        strVal = '\'' + strVal + '\'';
                     }
 
                     if(strWhere != null)
@@ -438,7 +440,7 @@ public class JDBCClausesDatabase extends JIPClausesDatabase
 
 		return clauses(null);
 	}
-    public ResultSet getResultSet() throws SQLException
+    private ResultSet getResultSet() throws SQLException
     {
     	if(m_rs == null)
     	{
@@ -497,7 +499,7 @@ public class JDBCClausesDatabase extends JIPClausesDatabase
                 nType == Types.TINYINT;
     }
 
-    public static final boolean isValid(int nType)
+    private static boolean isValid(int nType)
     {
         return !(nType == Types.BINARY ||
                  nType == Types.LONGVARBINARY ||
@@ -506,7 +508,7 @@ public class JDBCClausesDatabase extends JIPClausesDatabase
                  //nType == Types.NULL);
     }
 
-    public static final boolean isString(int nType)
+    private static boolean isString(int nType)
     {
         return  nType == Types.CHAR         ||
                 nType == Types.DATE         ||
@@ -531,22 +533,21 @@ public class JDBCClausesDatabase extends JIPClausesDatabase
     	return i;
     }
 
-    private final JIPClause getCurClause()
+    private JIPClause getCurClause()
     {
         JIPCons list = null;
-
-        String strCol = "";
-        JIPTerm term;
 
         try
         {
             // Read columns
             int nCount = getArity();
 
+            String strCol = "";
             for(int i = 0; i < nCount; i++)
             {
                 // read column
                 strCol = m_rs.getString(i + 1);
+                JIPTerm term;
                 if(strCol == null) // NULL value
                 {
                 	term = JIPList.NIL;

@@ -23,7 +23,7 @@ import java.util.Hashtable;
 
 class WAMTrace extends WAM
 {
-    private EventNotifier m_eventNotifier;
+    private final EventNotifier m_eventNotifier;
     private Node          m_callToSkip;
     private Node          m_lastExitNode;
     private boolean       m_bNotifyRedo;
@@ -45,7 +45,6 @@ class WAMTrace extends WAM
     @Override
     final Node backtrack(Node curNode)
     {
-        Node backtrack;
         while(curNode != null)
         {
 //            if(m_bNotifyRedo)
@@ -54,7 +53,7 @@ class WAMTrace extends WAM
             // risale l'albero saltando i punti di backtracking
             if(curNode.m_backtrack != null)
             {
-                backtrack = curNode.m_backtrack;
+                Node backtrack = curNode.m_backtrack;
                 do
                 {
                     // Azzera le variabili eventualmente istanziate al livello corrente
@@ -120,15 +119,14 @@ class WAMTrace extends WAM
     boolean run(Node curNode)
     {
         PrologRule  rule = null;
-        Clause      clause = null;
-        boolean     bUnify = false;
-        Hashtable   varTbl = null;
-        Node        newNode = null;
-        Node        parentNode;
         int         nCallCount = m_nBaseCounter;
 
         try
         {
+            Node newNode = null;
+            Hashtable varTbl = null;
+            boolean bUnify = false;
+            Clause clause = null;
             while(curNode != null)
             {
                 m_curNode = curNode;
@@ -245,7 +243,7 @@ class WAMTrace extends WAM
 
                         newNode = null;
 
-                        parentNode = curNode.m_parent;
+                        Node parentNode = curNode.m_parent;
 
                         while(newNode == null && parentNode != null)
                         {
@@ -434,7 +432,7 @@ class WAMTrace extends WAM
         return super.hasMoreChoicePoints();
     }
 
-    final void notifyCall(final Node call)
+    private void notifyCall(final Node call)
     {
         m_lastExitNode = null;
 
@@ -456,7 +454,7 @@ class WAMTrace extends WAM
             m_callToSkip = call;
     }
 
-    final boolean notifyFound(final ConsCell clause, final Node call)
+    private boolean notifyFound(final ConsCell clause, final Node call)
     {
         m_lastExitNode = null;
 
@@ -477,7 +475,7 @@ class WAMTrace extends WAM
         return !ev.retryCall();
     }
 
-    final void notifyBound(final Node call)
+    private void notifyBound(final Node call)
     {
         m_lastExitNode = null;
 
@@ -495,7 +493,7 @@ class WAMTrace extends WAM
         	throw new JIPAbortException();
     }
 
-    final void notifyExit(final Node call)
+    private void notifyExit(final Node call)
     {
         if(m_callToSkip == call)
         {
@@ -524,7 +522,7 @@ class WAMTrace extends WAM
         	throw new JIPAbortException();
     }
 
-    final void notifyFail(final Node call)
+    private void notifyFail(final Node call)
     {
         m_lastExitNode = null;
 
@@ -550,7 +548,7 @@ class WAMTrace extends WAM
         	throw new JIPAbortException();
     }
 
-    final void notifyRedo(final Node call)
+    private void notifyRedo(final Node call)
     {
         if(call == m_rootNode)
             return;
@@ -579,13 +577,13 @@ class WAMTrace extends WAM
         	throw new JIPAbortException();
     }
 
-    private final JIPTraceEvent notifyTraceEvent(final int nID, final PrologObject term, final int nInvocationNumber)
+    private JIPTraceEvent notifyTraceEvent(final int nID, final PrologObject term, final int nInvocationNumber)
     {
         //m_nLevel = nLevel;
         return this.m_eventNotifier.notifyTraceEvent(nID, term, hashCode(), this, nInvocationNumber);
     }
 
-    final void notifyStart()
+    private void notifyStart()
     {
         if(m_nBaseCounter == 0)
             notifyTraceEvent(JIPTraceEvent.ID_START, null, 0);
@@ -596,7 +594,7 @@ class WAMTrace extends WAM
         notifyTraceEvent(JIPTraceEvent.ID_STOP, null, 0);
     }
 
-    private synchronized final void waitForUserInput()
+    private synchronized void waitForUserInput()
     {
         try
         {
@@ -610,34 +608,32 @@ class WAMTrace extends WAM
 
     synchronized final void notifyUserInput()
     {
-        notify();
+        notifyAll();
     }
 
-    final boolean traceable(PrologObject obj)
-    {
-        if(getJIPEngine().getEnvVariable("__trace__") == null)
-        {
-            final Hashtable spyTable = (Hashtable)getJIPEngine().getEnvVariable("__spy__");
-            if(spyTable == null)
-            {
-                return false;
+    private boolean traceable(PrologObject obj) {
+        while (true) {
+            if (getJIPEngine().getEnvVariable("__trace__") == null) {
+                final Hashtable spyTable = (Hashtable) getJIPEngine().getEnvVariable("__spy__");
+                if (spyTable == null) {
+                    return false;
+                }
+
+                obj = BuiltIn.getRealTerm(obj);
+
+                if (obj instanceof Functor)
+                    return spyTable.containsKey(((Functor) obj).getName()) || spyTable.containsKey(((Functor) obj).getFriendlyName());
+                else if (obj instanceof ConsCell) {
+                    obj = ((ConsCell) obj).getHead();
+                    continue;
+                } else
+                    return spyTable.containsKey(((Atom) obj).getName()) || spyTable.containsKey(((Atom) obj).getName() + "/0");
+            } else if (obj instanceof Functor) {
+                if (getJIPEngine().isInternal(((Functor) obj).getName()))
+                    return false;
             }
 
-            obj = BuiltIn.getRealTerm(obj);
-
-            if(obj instanceof Functor)
-                return spyTable.containsKey(((Functor)obj).getName()) || spyTable.containsKey(((Functor)obj).getFriendlyName());
-            else if(obj instanceof ConsCell)
-                return traceable(((ConsCell)obj).getHead());
-            else
-                return spyTable.containsKey(((Atom)obj).getName()) || spyTable.containsKey(((Atom)obj).getName() + "/0");
+            return true;
         }
-        else if(obj instanceof Functor)
-        {
-        	if(getJIPEngine().isInternal(((Functor) obj).getName()))
-        		return false;
-        }
-
-        return true;
     }
 }

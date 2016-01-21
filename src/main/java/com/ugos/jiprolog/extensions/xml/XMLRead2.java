@@ -21,11 +21,14 @@
 
 package com.ugos.jiprolog.extensions.xml;
 
-import com.ugos.jiprolog.engine.*;
-import com.ugos.jiprolog.extensions.io.*;
+import com.ugos.jiprolog.engine.JIPCons;
+import com.ugos.jiprolog.engine.JIPInstantiationException;
+import com.ugos.jiprolog.engine.JIPTerm;
+import com.ugos.jiprolog.engine.JIPVariable;
+import com.ugos.jiprolog.extensions.io.JIPio;
+import com.ugos.jiprolog.extensions.io.StreamInfo;
 
-import java.io.*;
-import java.util.*;
+import java.util.Hashtable;
 
 public class XMLRead2 extends XMLRead1
 {

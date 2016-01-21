@@ -20,11 +20,12 @@
 
 package com.ugos.jiprolog.engine;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 //#ifndef _MIDP
-import java.io.Serializable;
 //#endif
 
 abstract class PrologObject implements Clearable, Serializable
@@ -60,13 +61,13 @@ abstract class PrologObject implements Clearable, Serializable
 
 	public final boolean unifiable(final PrologObject obj)
     {
-        Hashtable<Variable, Variable> vartbl = new Hashtable<Variable, Variable>(10);
+        Hashtable<Variable, Variable> vartbl = new Hashtable<>(10);
         boolean bUnify = _unify(obj, vartbl);
 
-        Enumeration<Variable> en = vartbl.keys();
-        while(en.hasMoreElements())
+        Iterator<Variable> iterator = vartbl.keySet().iterator();
+        while(iterator.hasNext())
         {
-            en.nextElement().clear();
+            iterator.next().clear();
         }
 
         return bUnify;
@@ -77,16 +78,15 @@ abstract class PrologObject implements Clearable, Serializable
 //        System.out.println(toString() + " == " + obj.toString());
 //        System.out.println(getClass().toString() + " == " + obj.getClass().toString());
 
-        final Hashtable<Variable, Variable> _varTbl = new Hashtable<Variable, Variable>(10);
+        final Hashtable<Variable, Variable> _varTbl = new Hashtable<>(10);
         Enumeration<Variable> en;
         if(_unify(obj, _varTbl))
         {
             // riporta le variabili instanziate nella vartable
-            Variable var;
-            en = _varTbl.keys();
-            while(en.hasMoreElements())
+            Iterator<Variable> iterator = _varTbl.keySet().iterator();
+            while(iterator.hasNext())
             {
-                var = en.nextElement();
+                Variable var = iterator.next();
                 varTbl.put(var, var);
             }
 
@@ -95,9 +95,9 @@ abstract class PrologObject implements Clearable, Serializable
         else
         {
             // ripulisce le variabili eventualmente instanziate
-            en = _varTbl.keys();
-            while(en.hasMoreElements())
-                en.nextElement().clear();
+            Iterator<Variable> iterator = _varTbl.keySet().iterator();
+            while(iterator.hasNext())
+                iterator.next().clear();
 
             return false;
         }
@@ -137,7 +137,7 @@ abstract class PrologObject implements Clearable, Serializable
     }
 
     public abstract void clear();
-    public abstract PrologObject copy(boolean flat, Hashtable<Variable, PrologObject> varTable);
+    protected abstract PrologObject copy(boolean flat, Hashtable<Variable, PrologObject> varTable);
     protected abstract boolean lessThen(PrologObject obj);
     protected abstract boolean _unify(PrologObject obj, Hashtable<Variable, Variable> varTbl);
     public abstract boolean termEquals(PrologObject obj);

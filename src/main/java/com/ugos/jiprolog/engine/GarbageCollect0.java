@@ -20,7 +20,7 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.*;
+import java.util.Hashtable;
 
 final class GarbageCollect0 extends BuiltIn
 {

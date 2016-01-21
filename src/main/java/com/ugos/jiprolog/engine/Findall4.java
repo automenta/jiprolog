@@ -5,9 +5,9 @@ import java.util.Stack;
 
 final class Findall4 extends BuiltIn
 {
-    WAM m_wam;
-    PrologObject m_res;
-    PrologObject m_solList;
+    private WAM m_wam;
+    private PrologObject m_res;
+    private PrologObject m_solList;
 
     public final boolean unify(final Hashtable varsTbl)
     {
@@ -39,7 +39,7 @@ final class Findall4 extends BuiltIn
 
         m_wam = getNewWAM();
 
-        Stack<PrologObject> solStack = new Stack<PrologObject>();
+        Stack<PrologObject> solStack = new Stack<>();
 
         if(m_wam.query(new ConsCell(query, null)))
         {
@@ -72,7 +72,7 @@ final class Findall4 extends BuiltIn
         return m_wam == null; // never started
     }
 
-    private final WAM getNewWAM()
+    private WAM getNewWAM()
     {
         if(getWAM() instanceof WAMTrace)
             return new WAMTrace((WAMTrace)getWAM());

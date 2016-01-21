@@ -41,7 +41,7 @@ public class JIProlog
      * @param args the first element of the array must be the file to consult.<br>
      * Note that such a file must define main/0 predicate.
      */
-    public static void main(String args[])
+    public static void main(String[] args)
     {
 //        System.out.println("*************************************************");
         System.out.println("** JIProlog " + VERSION);
@@ -62,12 +62,7 @@ public class JIProlog
         catch(IOException ex)
         {
             showMessage(ex.getMessage());
-        }
-        catch(JIPSyntaxErrorException ex)
-        {
-            showMessage(ex.getMessage());
-        }
-        catch(JIPRuntimeException ex)
+        } catch(JIPRuntimeException ex)
         {
             showMessage(ex.getMessage());
         }
@@ -78,7 +73,7 @@ public class JIProlog
     	System.out.println(strMsg);
     }
 
-    public static void printHelp()
+    private static void printHelp()
     {
     	System.out.println("*************************************************");
         System.out.println("** JIProlog Standalone interpreter v" + VERSION);
@@ -92,7 +87,7 @@ public class JIProlog
         System.out.println("\n -d <path> working directory");
     }
 
-    private static void processArgs(String args[]) throws JIPSyntaxErrorException, IOException
+    private static void processArgs(String... args) throws JIPSyntaxErrorException, IOException
     {
     	String initializationGoal = null;
 

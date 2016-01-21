@@ -39,7 +39,7 @@ package com.ugos.jiprolog.engine;
  */
 public class JIPTraceEvent extends JIPEvent
 {
-    private WAMTrace m_wam;
+    private final WAMTrace m_wam;
 
     /**
     * ID of a Call event
@@ -88,7 +88,7 @@ public class JIPTraceEvent extends JIPEvent
     private static final int RETRY   = 4;
     
     private int m_nToDo;
-    private int m_nLevel;
+    private final int m_nLevel;
     
     JIPTraceEvent(final int nID, final PrologObject term, final JIPEngine source, final int nQueryHandle, final WAMTrace wam, final int nLevel)
     {

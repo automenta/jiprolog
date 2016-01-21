@@ -22,7 +22,7 @@ package com.ugos.jiprolog.extensions.exception;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
+import java.util.Hashtable;
 
 public class JIPCatch3 extends JIPXCall
 {
@@ -61,10 +61,9 @@ public class JIPCatch3 extends JIPXCall
 	            m_engine = getJIPEngine();
 
 	            //  Extract inputs
-	            JIPTerm goal = null;
 
-	            goal = params.getNth(1);
-	            if (goal instanceof JIPVariable)
+                JIPTerm goal = params.getNth(1);
+                if (goal instanceof JIPVariable)
 	            {
 	                // try to extract the term
 	                if(!((JIPVariable)goal).isBounded())

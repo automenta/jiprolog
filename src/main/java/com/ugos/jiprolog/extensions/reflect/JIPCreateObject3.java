@@ -23,8 +23,10 @@ package com.ugos.jiprolog.extensions.reflect;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Hashtable;
+import java.util.Vector;
 
 //create_object('java.lang.String'('java.lang.String'), ['ugo e ornella'], X).
 
@@ -119,7 +121,7 @@ public class JIPCreateObject3 extends JIPXCall
             else
             {
                 // get the class
-                objClass = getClass().forName(((JIPFunctor)className).getName().toString());
+                objClass = getClass().forName(((JIPFunctor) className).getName());
 
             }
 
@@ -150,15 +152,7 @@ public class JIPCreateObject3 extends JIPXCall
         {
             throw new JIPRuntimeException(JIPxReflect.ERR_METHOD_NOT_FOUND, JIPxReflect.STR_METHOD_NOT_FOUND);
         }
-        catch(InvocationTargetException ex)
-        {
-            throw new JIPRuntimeException(JIPxReflect.ERR_INSTANTIATION, ex.getMessage());
-        }
-        catch(IllegalAccessException ex)
-        {
-            throw new JIPRuntimeException(JIPxReflect.ERR_INSTANTIATION, ex.getMessage());
-        }
-        catch(InstantiationException ex)
+        catch(InvocationTargetException | InstantiationException | IllegalAccessException ex)
         {
             throw new JIPRuntimeException(JIPxReflect.ERR_INSTANTIATION, ex.getMessage());
         }

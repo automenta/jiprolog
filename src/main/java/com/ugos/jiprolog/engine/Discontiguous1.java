@@ -20,7 +20,8 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
 class Discontiguous1 extends BuiltIn
 {
@@ -32,7 +33,7 @@ class Discontiguous1 extends BuiltIn
         return true;
     }
 
-    protected Vector getPredDefVect()
+    private Vector getPredDefVect()
     {
         PrologObject pred = getRealTerm(getParam(1));
 
@@ -57,7 +58,7 @@ class Discontiguous1 extends BuiltIn
                 	if (((Functor)head).getAtom().equals(Atom.SLASHSLASH))
 	                {
 	                    ConsCell params = ((Functor )head).getParams();
-	                    strPredDef = new StringBuilder(((Atom)params.getHead()).getName()).append("/").append(((ConsCell)params.getTail()).getHead().toString(getJIPEngine())).toString();
+	                    strPredDef = new StringBuilder(((Atom)params.getHead()).getName()).append('/').append(((ConsCell)params.getTail()).getHead().toString(getJIPEngine())).toString();
 	                    predDefVect.addElement(strPredDef);
 	                }
 	                else

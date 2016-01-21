@@ -23,7 +23,7 @@ package com.ugos.jiprolog.extensions.terms;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
+import java.util.Hashtable;
 
 public class Numbervars3 extends JIPXCall
 {

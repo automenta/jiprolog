@@ -32,13 +32,13 @@ final class IndexedDefaultClausesDatabase extends DefaultClausesDatabase
 
     	setJIPEngine(db.getJIPEngine());
 
-        m_clausesVarVector = new Vector<Clause>();
-        m_clausesAtomTable = new Hashtable<PrologObject, Vector<Clause>>();
-        m_clausesExpressionTable = new Hashtable<PrologObject, Vector<Clause>>();
-        m_clausesFunctorTable = new Hashtable<Atom, Vector<Clause>>();
+        m_clausesVarVector = new Vector<>();
+        m_clausesAtomTable = new Hashtable<>();
+        m_clausesExpressionTable = new Hashtable<>();
+        m_clausesFunctorTable = new Hashtable<>();
 
-        m_clausesConsVector = new Vector<Clause>();
-        m_clausesListVector = new Vector<Clause>();
+        m_clausesConsVector = new Vector<>();
+        m_clausesListVector = new Vector<>();
 
         for(Clause clause : db.m_clausesVector)
         {
@@ -91,7 +91,7 @@ final class IndexedDefaultClausesDatabase extends DefaultClausesDatabase
 	        	}
             	else
     	        {
-    	        	Vector<Clause> clauseVector = new Vector<Clause>();
+    	        	Vector<Clause> clauseVector = new Vector<>();
     	        	m_clausesAtomTable.put(key, clauseVector);
     	        	clauseVector.add(clause);
     	        	addVariablesToVector(clauseVector);
@@ -110,7 +110,7 @@ final class IndexedDefaultClausesDatabase extends DefaultClausesDatabase
 	        }
         	else
 	        {
-	        	Vector<Clause> clauseVector = new Vector<Clause>();
+	        	Vector<Clause> clauseVector = new Vector<>();
 	        	m_clausesFunctorTable.put(atom, clauseVector);
 	        	clauseVector.add(clause);
 	        	addVariablesToVector(clauseVector);
@@ -128,7 +128,7 @@ final class IndexedDefaultClausesDatabase extends DefaultClausesDatabase
 	        }
         	else
 	        {
-	        	Vector<Clause> clauseVector = new Vector<Clause>();
+	        	Vector<Clause> clauseVector = new Vector<>();
 	        	m_clausesExpressionTable.put(key, clauseVector);
 	        	clauseVector.add(clause);
 	        	addVariablesToVector(clauseVector);
@@ -142,7 +142,7 @@ final class IndexedDefaultClausesDatabase extends DefaultClausesDatabase
 	        }
         	else
 	        {
-	        	Vector<Clause> clauseVector = new Vector<Clause>();
+	        	Vector<Clause> clauseVector = new Vector<>();
 	        	m_clausesAtomTable.put(key, clauseVector);
 	        	clauseVector.add(clause);
 	        	addVariablesToVector(clauseVector);
@@ -192,7 +192,7 @@ final class IndexedDefaultClausesDatabase extends DefaultClausesDatabase
         	}
         	else
 	        {
-	        	Vector<Clause> clauseVector = new Vector<Clause>();
+	        	Vector<Clause> clauseVector = new Vector<>();
 	        	m_clausesAtomTable.put(key, clauseVector);
 	        	addVariablesToVector(clauseVector);
 	        	clauseVector.add(clause);
@@ -210,7 +210,7 @@ final class IndexedDefaultClausesDatabase extends DefaultClausesDatabase
 	        }
         	else
 	        {
-	        	Vector<Clause> clauseVector = new Vector<Clause>();
+	        	Vector<Clause> clauseVector = new Vector<>();
 	        	m_clausesFunctorTable.put(atom, clauseVector);
 	        	addVariablesToVector(clauseVector);
 	        	clauseVector.add(clause);
@@ -228,7 +228,7 @@ final class IndexedDefaultClausesDatabase extends DefaultClausesDatabase
 	        }
         	else
 	        {
-	        	Vector<Clause> clauseVector = new Vector<Clause>();
+	        	Vector<Clause> clauseVector = new Vector<>();
 	        	m_clausesExpressionTable.put(key, clauseVector);
 	        	addVariablesToVector(clauseVector);
 	        	clauseVector.add(clause);
@@ -242,7 +242,7 @@ final class IndexedDefaultClausesDatabase extends DefaultClausesDatabase
 	        }
         	else
 	        {
-	        	Vector<Clause> clauseVector = new Vector<Clause>();
+	        	Vector<Clause> clauseVector = new Vector<>();
 	        	m_clausesAtomTable.put(key, clauseVector);
 	        	addVariablesToVector(clauseVector);
 	        	clauseVector.add(clause);

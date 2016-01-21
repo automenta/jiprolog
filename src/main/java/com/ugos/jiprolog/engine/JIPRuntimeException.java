@@ -19,8 +19,10 @@
  */
 
 package com.ugos.jiprolog.engine;
+
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Hashtable;
-import java.io.*;
 /**
  * JIPRuntimeException is the base class af all exceptions raised by JIProlog.<br>
  * All runtime errors and exceptions are translated in JIPRuntimeException except JIPSyntaxErrorException.
@@ -33,17 +35,17 @@ public class JIPRuntimeException extends RuntimeException
 {
 	private static final long serialVersionUID = 3046239634882549653L;
 
-	protected JIPEngine m_engine;
-	protected WAM.Node m_curNode;
-	protected String m_strFileName;
-	protected PrologObject m_term;
+	JIPEngine m_engine;
+	WAM.Node m_curNode;
+	String m_strFileName;
+	private PrologObject m_term;
 
-	protected int m_nLineNumber;
-	protected int m_nPosition;
+	int m_nLineNumber;
+	int m_nPosition;
 
 	public static int ID_USER_EXCEPTION;
 
-	protected PrologObject exceptionTerm;
+	private PrologObject exceptionTerm;
 
 	public JIPRuntimeException(int errorNumber, String message)
     {
@@ -71,7 +73,7 @@ public class JIPRuntimeException extends RuntimeException
 
     /** Constructs an empty JIPRuntimeException
      */
-    public JIPRuntimeException()
+    protected JIPRuntimeException()
     {
 
     }
@@ -96,7 +98,7 @@ public class JIPRuntimeException extends RuntimeException
         }
     }
 
-    protected JIPTerm getTerm(final PrologObject type)
+    JIPTerm getTerm(final PrologObject type)
     {
     	if(m_strFileName == null)
     	    m_strFileName = "undefined";
@@ -164,7 +166,7 @@ public class JIPRuntimeException extends RuntimeException
     /** Write the stack trace of goals to the given print stream
      * @param ps print stream that receive the stack trace
      */
-    public void printPrologStackTrace(PrintStream ps)
+    private void printPrologStackTrace(PrintStream ps)
     {
         printPrologStackTrace(new PrintWriter(ps));
     }
@@ -172,7 +174,7 @@ public class JIPRuntimeException extends RuntimeException
     /** Write the stack trace of goals to the given print writer
      * @param pw printwriter that receive the stack trace
      */
-    public void printPrologStackTrace(PrintWriter pw)
+    private void printPrologStackTrace(PrintWriter pw)
     {
         if(m_curNode == null)
         {
@@ -209,48 +211,48 @@ public class JIPRuntimeException extends RuntimeException
     	return new JIPRuntimeException(error);
     }
 
-    public static String getErrorMessage(int errorNumber)
+    private static String getErrorMessage(int errorNumber)
     {
     	String err = s_errorTable.get(errorNumber);
     	return err != null ? err : "";
     }
 
-    static final Hashtable<Integer, String> s_errorTable = new Hashtable<Integer, String>();
+    private static final Hashtable<Integer, String> s_errorTable = new Hashtable<>();
 
     static
     {
-        s_errorTable.put(new Integer(-1), "Unknown Exception");
-        s_errorTable.put(new Integer(0), "Execution aborted");
-        s_errorTable.put(new Integer(1), "Syntax Error - %1");  // syntax error
-        s_errorTable.put(new Integer(2), "Arithmetic Exception: %1");
-        s_errorTable.put(new Integer(3), "One of the parameter is not of the expected type: %1");
-        s_errorTable.put(new Integer(4), "One of the parameter is an unbounded variable: %1");
-        s_errorTable.put(new Integer(5), "The predicate %1 has been defined in another file");
-        s_errorTable.put(new Integer(6), "The file specified is not found: %1");
-        s_errorTable.put(new Integer(7), "JVM Exception: %1");
-        s_errorTable.put(new Integer(8), "JVM IOException: %1");
-        s_errorTable.put(new Integer(9), "Security Exception. If JIPProlog is running as an applet it is subject to security limitations: %1");
-        s_errorTable.put(new Integer(10), "Unable to add a clause to the related database");
-        s_errorTable.put(new Integer(11), "The clause to add has an invalid head: %1");
-        s_errorTable.put(new Integer(12), "Attempt to abolish a system predicate: %1");
-        s_errorTable.put(new Integer(13), "Attempt to retract a system predicate: %1");
-        s_errorTable.put(new Integer(14), "Attempt to redefine a system operator: %1");
-        s_errorTable.put(new Integer(15), "Attempt to assert a system predicate: %1");
-        s_errorTable.put(new Integer(16), "The precedence of the operator %1 is out of range (0, 1200)");
-        s_errorTable.put(new Integer(17), "Invalid associativity specifier: %1");
-        s_errorTable.put(new Integer(18), "The path specified is not found: %1");
-        s_errorTable.put(new Integer(19), "Open snip <!/0 is not found");
-        s_errorTable.put(new Integer(20), "Unable to write to the selected file");
-        s_errorTable.put(new Integer(21), "Unexpected error found while consulting the file: %1");
-        s_errorTable.put(new Integer(22), "The variable %1 is unbounded");
-        s_errorTable.put(new Integer(23), "The meta-call variable %1 is unbounded");
-        s_errorTable.put(new Integer(24), "Module directive defined twice in the file: %1");
-        s_errorTable.put(new Integer(25), "The type of the term %1 is unknown");
-        s_errorTable.put(new Integer(26), "Working dicectory has been set to null by the environment");
-        s_errorTable.put(new Integer(27), "Directive fails while compiling the file: %1");
-        s_errorTable.put(new Integer(28), "The file to load may be corrupted: %1");
-        s_errorTable.put(new Integer(29), "Unexpected call");
-        s_errorTable.put(new Integer(30), "Attempt to assert a static predicate: %1");
+        s_errorTable.put(-1, "Unknown Exception");
+        s_errorTable.put(0, "Execution aborted");
+        s_errorTable.put(1, "Syntax Error - %1");  // syntax error
+        s_errorTable.put(2, "Arithmetic Exception: %1");
+        s_errorTable.put(3, "One of the parameter is not of the expected type: %1");
+        s_errorTable.put(4, "One of the parameter is an unbounded variable: %1");
+        s_errorTable.put(5, "The predicate %1 has been defined in another file");
+        s_errorTable.put(6, "The file specified is not found: %1");
+        s_errorTable.put(7, "JVM Exception: %1");
+        s_errorTable.put(8, "JVM IOException: %1");
+        s_errorTable.put(9, "Security Exception. If JIPProlog is running as an applet it is subject to security limitations: %1");
+        s_errorTable.put(10, "Unable to add a clause to the related database");
+        s_errorTable.put(11, "The clause to add has an invalid head: %1");
+        s_errorTable.put(12, "Attempt to abolish a system predicate: %1");
+        s_errorTable.put(13, "Attempt to retract a system predicate: %1");
+        s_errorTable.put(14, "Attempt to redefine a system operator: %1");
+        s_errorTable.put(15, "Attempt to assert a system predicate: %1");
+        s_errorTable.put(16, "The precedence of the operator %1 is out of range (0, 1200)");
+        s_errorTable.put(17, "Invalid associativity specifier: %1");
+        s_errorTable.put(18, "The path specified is not found: %1");
+        s_errorTable.put(19, "Open snip <!/0 is not found");
+        s_errorTable.put(20, "Unable to write to the selected file");
+        s_errorTable.put(21, "Unexpected error found while consulting the file: %1");
+        s_errorTable.put(22, "The variable %1 is unbounded");
+        s_errorTable.put(23, "The meta-call variable %1 is unbounded");
+        s_errorTable.put(24, "Module directive defined twice in the file: %1");
+        s_errorTable.put(25, "The type of the term %1 is unknown");
+        s_errorTable.put(26, "Working dicectory has been set to null by the environment");
+        s_errorTable.put(27, "Directive fails while compiling the file: %1");
+        s_errorTable.put(28, "The file to load may be corrupted: %1");
+        s_errorTable.put(29, "Unexpected call");
+        s_errorTable.put(30, "Attempt to assert a static predicate: %1");
         /*        s_errorTable.put(new Integer(30), "The dialog specified as JIPDialog isn't modal: %1");
         s_errorTable.put(new Integer(31), "The JIPDialog class specified is not found:  %1");
         s_errorTable.put(new Integer(32), "The JIPDialog class does not implement JIPDialog interface correctly:  %1");
@@ -259,28 +261,28 @@ public class JIPRuntimeException extends RuntimeException
         s_errorTable.put(new Integer(35), "The JIPDialog class specified cannot be instantiated: %1");
          s_errorTable.put(new Integer(36), "The class specified does not implement JIPDialog interface: %1");
          */
-        s_errorTable.put(new Integer(37), "The JIPClausesDatabase class specified is not loaded: %1. Load it using load_library/1");
-        s_errorTable.put(new Integer(38), "The JIPClausesDatabase class specified cannot be accessed: %1");
-        s_errorTable.put(new Integer(39), "The JIPClausesDatabase class specified cannot be instantiated: %1");
-        s_errorTable.put(new Integer(40), "The class specified does not implement JIPClausesDatabase interface:  %1");
-        s_errorTable.put(new Integer(41), "The JIPXCall class specified is not loaded: %1. Load it using load_library/1");
-        s_errorTable.put(new Integer(42), "The JIPXCall class specified cannot be accessed: %1");
-        s_errorTable.put(new Integer(43), "The JIPXCall class specified cannot be instantiated: %1");
-        s_errorTable.put(new Integer(44), "The class specified does not implement JIPXCall interface: %1");
-        s_errorTable.put(new Integer(45), "Functor excepted instead of: %1");
-        s_errorTable.put(new Integer(46), "Forbidden operation on a system predicate: %1");
-        s_errorTable.put(new Integer(47), "Bad definition in module declaration: %1");
-        s_errorTable.put(new Integer(48), "Operator %1 cannot be redefined");
-        s_errorTable.put(new Integer(49), "There are no other solutions for the query: %1");
+        s_errorTable.put(37, "The JIPClausesDatabase class specified is not loaded: %1. Load it using load_library/1");
+        s_errorTable.put(38, "The JIPClausesDatabase class specified cannot be accessed: %1");
+        s_errorTable.put(39, "The JIPClausesDatabase class specified cannot be instantiated: %1");
+        s_errorTable.put(40, "The class specified does not implement JIPClausesDatabase interface:  %1");
+        s_errorTable.put(41, "The JIPXCall class specified is not loaded: %1. Load it using load_library/1");
+        s_errorTable.put(42, "The JIPXCall class specified cannot be accessed: %1");
+        s_errorTable.put(43, "The JIPXCall class specified cannot be instantiated: %1");
+        s_errorTable.put(44, "The class specified does not implement JIPXCall interface: %1");
+        s_errorTable.put(45, "Functor excepted instead of: %1");
+        s_errorTable.put(46, "Forbidden operation on a system predicate: %1");
+        s_errorTable.put(47, "Bad definition in module declaration: %1");
+        s_errorTable.put(48, "Operator %1 cannot be redefined");
+        s_errorTable.put(49, "There are no other solutions for the query: %1");
 
-        s_errorTable.put(new Integer(100), "You cannot do this operation because the interpreter is still working");
-        s_errorTable.put(new Integer(101), "You cannot do this operation because the query was closed");
-        s_errorTable.put(new Integer(102), "The query specified in the handle was not found or it was closed");
-        s_errorTable.put(new Integer(103), "The predicate %1 is undefined");
-        s_errorTable.put(new Integer(104), "The predicate %1 is not supported");
-        s_errorTable.put(new Integer(200), "Runtime Error");
+        s_errorTable.put(100, "You cannot do this operation because the interpreter is still working");
+        s_errorTable.put(101, "You cannot do this operation because the query was closed");
+        s_errorTable.put(102, "The query specified in the handle was not found or it was closed");
+        s_errorTable.put(103, "The predicate %1 is undefined");
+        s_errorTable.put(104, "The predicate %1 is not supported");
+        s_errorTable.put(200, "Runtime Error");
 
-        s_errorTable.put(new Integer(500), "ISO Exception");
+        s_errorTable.put(500, "ISO Exception");
     }
     /*
      Interpreter Generic Exceptions

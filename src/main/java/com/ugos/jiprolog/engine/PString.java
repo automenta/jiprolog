@@ -113,21 +113,7 @@ final class PString extends List //implements Serializable
             	throw new JIPTypeException(JIPTypeException.CHARACTER, head);
             }
 
-            if (tail instanceof Variable)
-            {
-                tail = ((Variable)tail).getObject();
-            }
-
-            if(tail == null)
-            {
-            	throw new JIPTypeException(JIPTypeException.ATOM_OR_STRING, head);
-            }
-            else if (!(tail instanceof ConsCell))
-            {
-            	throw new JIPTypeException(JIPTypeException.ATOM_OR_STRING, head);
-            }
-
-//          System.out.println("1" + tail.getClass());
+            //          System.out.println("1" + tail.getClass());
 
             tail = ((ConsCell)tail).getTail();
 
@@ -147,7 +133,7 @@ final class PString extends List //implements Serializable
         }
     }
 
-    public PString(final PString string)
+    private PString(final PString string)
     {
     	super(string);
     	m_chars = string.m_chars;
@@ -191,7 +177,7 @@ final class PString extends List //implements Serializable
         }
     }
 
-    private static final List getList(final String string, boolean chars)
+    private static List getList(final String string, boolean chars)
     {
         List retList = null;
 

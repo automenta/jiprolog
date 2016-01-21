@@ -20,9 +20,11 @@
 
 package com.ugos.jiprolog.engine;
 //#ifndef _MIDP
+
 import java.io.Serializable;
-//#endif
 import java.util.Hashtable;
+
+//#endif
 
 /**
  * JIPQuery wraps a single synchronous query.<br>
@@ -38,13 +40,13 @@ import java.util.Hashtable;
  * Home Page: http://www.ugochirico.com
  * @see com.ugos.jiprolog.engine.JIPEngine
  */
-public class JIPQuery extends Object implements Serializable
+public class JIPQuery implements Serializable
 {
     private final static long serialVersionUID = 300000001L;
 
-    private WAM          m_wam;
-    private PrologObject m_query;
-    private PrologObject m_solution;
+    private final WAM          m_wam;
+    private final PrologObject m_query;
+    private final PrologObject m_solution;
     private boolean      m_bOpen;
     private boolean      m_bNoMore;
     private boolean      m_bSoftAbort = false;
@@ -136,7 +138,7 @@ public class JIPQuery extends Object implements Serializable
     /** Returns true if the query is closed.<br>
      * @return true if the query is closed, false otherwise.
      */
-    public final boolean isClosed()
+    private boolean isClosed()
     {
         return m_wam.isClosed();
     }

@@ -20,14 +20,13 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.*;
+import java.util.Hashtable;
 
 final class Less2 extends BuiltIn
 {
     public final boolean unify(final Hashtable varsTbl)
     {
         Expression exp1;
-        Expression exp2;
         try
         {
             exp1 = Expression.compute(getRealTerm(getParam(1)));
@@ -37,6 +36,7 @@ final class Less2 extends BuiltIn
         	throw new JIPTypeException(JIPTypeException.EVALUABLE, getParam(1));
         }
 
+        Expression exp2;
         try
         {
             exp2 = Expression.compute(getRealTerm(getParam(2)));

@@ -23,8 +23,7 @@ package com.ugos.jiprolog.extensions.reflect;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
-import java.lang.reflect.*;
+import java.util.Hashtable;
 
 public class JIPGetClass2 extends JIPXCall
 {

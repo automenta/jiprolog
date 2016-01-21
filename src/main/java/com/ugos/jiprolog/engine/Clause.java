@@ -265,7 +265,7 @@ class Clause extends ConsCell
 				checkForCallable(((Functor)head).getParams());
 			}
 		}
-		else if(head instanceof ConsCell && !(head instanceof List) && !(head instanceof Functor))
+		else if(head instanceof ConsCell)
 		{
 			checkForCallable((ConsCell)head);
 		}
@@ -294,7 +294,7 @@ class Clause extends ConsCell
 					checkForCallable(((Functor)head).getParams());
 				}
 			}
-			else if(head instanceof ConsCell && !(head instanceof List) && !(head instanceof Functor))
+			else if(head instanceof ConsCell)
 			{
 				checkForCallable((ConsCell)head);
 			}

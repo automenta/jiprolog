@@ -22,7 +22,8 @@ package com.ugos.jiprolog.extensions.sets;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
 public class Bagof3 extends Findall3
 {
@@ -113,25 +114,23 @@ public class Bagof3 extends Findall3
         return m_solList != JIPList.NIL && (super.hasMoreChoicePoints() || !m_solVect.isEmpty());
     }
 
-    private final JIPCons extractFreeVars(JIPTerm obj)
-    {
-        if(obj instanceof JIPFunctor)
-        {
-            if (((JIPFunctor)obj).getName().equals("^"))
-                return JIPCons.create(((JIPFunctor)obj).getParams().getHead(), extractFreeVars(((JIPFunctor)obj).getParams().getTail()));
-            else
+    private static JIPCons extractFreeVars(JIPTerm obj) {
+        while (true) {
+            if (obj instanceof JIPFunctor) {
+                if (((JIPFunctor) obj).getName().equals("^"))
+                    return JIPCons.create(((JIPFunctor) obj).getParams().getHead(), extractFreeVars(((JIPFunctor) obj).getParams().getTail()));
+                else
+                    return JIPCons.NIL;
+            } else if (obj instanceof JIPCons) {
+                JIPCons head = extractFreeVars(((JIPCons) obj).getHead());
+                if (head != null)
+                    return JIPCons.append(head, extractFreeVars(((JIPCons) obj).getTail()));
+                else {
+                    obj = ((JIPCons) obj).getTail();
+                }
+            } else
                 return JIPCons.NIL;
         }
-        else if(obj instanceof JIPCons)
-        {
-            JIPCons head = extractFreeVars(((JIPCons)obj).getHead());
-            if(head != null)
-                return JIPCons.append(head, extractFreeVars(((JIPCons)obj).getTail()));
-            else
-                return extractFreeVars(((JIPCons)obj).getTail());
-        }
-        else
-            return JIPCons.NIL;
     }
 }
 

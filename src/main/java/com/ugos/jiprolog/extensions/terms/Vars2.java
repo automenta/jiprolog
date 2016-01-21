@@ -23,7 +23,7 @@ package com.ugos.jiprolog.extensions.terms;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
+import java.util.Hashtable;
 
 public class Vars2 extends JIPXCall
 {
@@ -45,10 +45,9 @@ public class Vars2 extends JIPXCall
         JIPVariable vars[] = term.getVariables();
         
         JIPList varList = null;
-        JIPCons cons;
         for(int i = 0; i < vars.length; i++)
         {
-            cons = JIPCons.create(JIPAtom.create(vars[i].getName()), JIPCons.create(vars[i], JIPCons.NIL));
+            JIPCons cons = JIPCons.create(JIPAtom.create(vars[i].getName()), JIPCons.create(vars[i], JIPCons.NIL));
             varList = JIPList.create(cons, varList);
         }
         

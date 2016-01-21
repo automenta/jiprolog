@@ -23,11 +23,11 @@ package com.ugos.jiprolog.extensions.system;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
+import java.util.Hashtable;
 
 public class Gensym2 extends JIPXCall
 {
-    private static int s_nCount = 0;
+    private static final int s_nCount = 0;
     
     public final boolean unify(final JIPCons input, Hashtable varsTbl)
     {

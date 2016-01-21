@@ -28,7 +28,7 @@ package com.ugos.jiprolog.engine;
  * Home Page: http://www.ugochirico.com
  * @see com.ugos.jiprolog.engine.JIPEngine
  */
-public class JIPQueryClosedException extends JIPRuntimeException
+class JIPQueryClosedException extends JIPRuntimeException
 {
     JIPQueryClosedException()
     {

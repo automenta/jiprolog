@@ -20,7 +20,8 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 final class Retract1 extends BuiltIn
 {

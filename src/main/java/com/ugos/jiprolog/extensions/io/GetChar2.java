@@ -21,14 +21,16 @@ package com.ugos.jiprolog.extensions.io;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Hashtable;
+import java.util.Properties;
 
 public final class GetChar2 extends JIPXCall
 {
     private int streamHandle;
 
-    protected final int readNextChar(InputStream ins)
+    private int readNextChar(InputStream ins)
     {
 		if(streamHandle == JIPEngine.USER_INPUT_HANDLE)
             getJIPEngine().notifyEvent(JIPEvent.ID_WAITFORUSERINPUT, getPredicate(), getQueryHandle());
@@ -80,8 +82,6 @@ public final class GetChar2 extends JIPXCall
 
         final InputStream ins = JIPio.getInputStream(streamHandle = sinfo.getHandle(), getJIPEngine());
 
-        int c = -1;
-
         if (ch instanceof JIPVariable && ((JIPVariable)ch).isBounded())
         {
             ch = ch.getValue();
@@ -93,7 +93,8 @@ public final class GetChar2 extends JIPXCall
 				throw new JIPTypeException(JIPTypeException.IN_CHARACTER, ch);
         }
 
-		if(properties.getProperty("end_of_stream").equals("end_of_stream(past)"))
+        int c = -1;
+        if(properties.getProperty("end_of_stream").equals("end_of_stream(past)"))
 		{
 			if(properties.getProperty("eof_action").equals("eof_action(error)"))
 				throw new JIPPermissionException("input", "past_end_of_stream", sinfo.getAlias());

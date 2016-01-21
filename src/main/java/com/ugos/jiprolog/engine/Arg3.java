@@ -60,8 +60,7 @@ final class Arg3 extends BuiltIn
 
                  param = ((Functor)term).getParams().getTerm(index);
              }
-        	 else if(term instanceof ConsCell) // [Arg1|Arg2] = '.'(Arg1, Arg2)
-        	 {
+        	 else {
             	if(index > ((ConsCell)term).getHeight())
             		return false;
 

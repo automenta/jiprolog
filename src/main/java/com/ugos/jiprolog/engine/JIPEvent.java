@@ -34,13 +34,12 @@ package com.ugos.jiprolog.engine;
  * @see com.ugos.jiprolog.engine.JIPEventListener#solutionNotified
  * @see com.ugos.jiprolog.engine.JIPEventListener#termNotified
  */
-public class JIPEvent extends Object
-{
-    private int              m_nID;
-    private PrologObject     m_term;
-    private JIPEngine        m_source;
-    private int              m_nQueryHandle;
-    private long             m_when;
+public class JIPEvent {
+    private final int              m_nID;
+    private final PrologObject     m_term;
+    private final JIPEngine        m_source;
+    private final int              m_nQueryHandle;
+    private final long             m_when;
     private boolean          m_bConsumed = false;
  
     /**

@@ -20,8 +20,9 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Hashtable;
+import java.util.Stack;
 
 final class PrologParser
 {
@@ -32,21 +33,21 @@ final class PrologParser
     private static final int STATE_ARG_LIST       = 4;
     private static final int STATE_SPECIAL_BRACKET = 5;
 
-    private static String CASE_CHARS = "()[]{}.|";
+    private static final String CASE_CHARS = "()[]{}.|";
 
-    private Hashtable<String, Variable> m_varTable = new Hashtable<String, Variable>(10);
-    private Hashtable<String, Variable> m_singVarTable = new Hashtable<String, Variable>(10);
+    private final Hashtable<String, Variable> m_varTable = new Hashtable<>(10);
+    private final Hashtable<String, Variable> m_singVarTable = new Hashtable<>(10);
 
-    private PrologTokenizer m_tokenizer;
+    private final PrologTokenizer m_tokenizer;
 
     // serve solo per le parentesi quadre nel caso [(a,b)]
 //    private int m_nTokCount;
 
     //private ParserInputStream m_lnReader;
-    private ParserReader m_lnReader;
-    private OperatorManager m_opManager;
-    private JIPEngine m_engine;
-    private String m_strFileName;
+    private final ParserReader m_lnReader;
+    private final OperatorManager m_opManager;
+    private final JIPEngine m_engine;
+    private final String m_strFileName;
 
     private String sign = "";
 
@@ -171,14 +172,9 @@ final class PrologParser
         return m_singVarTable;
     }
 
-    final private PrologObject translateTerm(int nState, ParserReader lnReader) throws JIPSyntaxErrorException
+    private PrologObject translateTerm(int nState, ParserReader lnReader) throws JIPSyntaxErrorException
     {
-        Stack<Object> termStack = new Stack<Object>();
-        boolean bEnd = false;
-        boolean bWhiteSpace = false;
-        boolean lastParenthesis = false;
-        boolean quoted = false;
-        boolean started = false;
+        Stack<Object> termStack = new Stack<>();
 
         PrologTokenizer.Token tok = null;
 
@@ -188,6 +184,11 @@ final class PrologParser
 
         try
         {
+            boolean started = false;
+            boolean quoted = false;
+            boolean lastParenthesis = false;
+            boolean bWhiteSpace = false;
+            boolean bEnd = false;
             while(!bEnd)
             {
                 tok = m_tokenizer.getNextToken();
@@ -217,11 +218,10 @@ final class PrologParser
                 {
                     case PrologTokenizer.TOKEN_NUMBER:
                         {
-                            Expression exp;
                             if(lastObj instanceof PrologObject)
-                                throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "operator_expected(" + ((PrologObject)lastObj).toString(m_opManager) + ")");
+                                throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "operator_expected(" + ((PrologObject)lastObj).toString(m_opManager) + ')');
 
-                            exp = Expression.createNumber(sign + tok.m_strToken);
+                            Expression exp = Expression.createNumber(sign + tok.m_strToken);
 
                             sign = "";
 
@@ -264,7 +264,7 @@ final class PrologParser
                     case PrologTokenizer.TOKEN_DBLQUOTE:
                         {
                             if(lastObj instanceof PrologObject)
-                                throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "operator_expected(" + ((PrologObject)lastObj).toString(m_opManager) + ")");
+                                throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "operator_expected(" + ((PrologObject)lastObj).toString(m_opManager) + ')');
 
                             String strVal = tok.m_strToken.substring(1, tok.m_strToken.length() - 1);
 
@@ -338,14 +338,14 @@ final class PrologParser
                             }
                             else if(tok.m_strToken.equals("("))
                             {
-                                PrologObject term;
 
                                 lastParenthesis = false;
 
+                                PrologObject term;
                                 if(lastObj instanceof Atom)// || lastObj instanceof Operator)
                                 {
                                     if(bWhiteSpace)
-                                        throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_blank_before(" + ((PrologObject)lastObj).toString(m_opManager) + ")");
+                                        throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_blank_before(" + ((PrologObject)lastObj).toString(m_opManager) + ')');
 
                                     term = translateTerm(STATE_ARG_LIST, lnReader);
 
@@ -447,7 +447,7 @@ final class PrologParser
                                 }
                                 else if(lastObj instanceof PrologObject)
                                 {
-                                    throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "operator_expected(" + ((PrologObject)lastObj).toString(m_opManager) + ")");
+                                    throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "operator_expected(" + ((PrologObject)lastObj).toString(m_opManager) + ')');
                                 }
                                 else
                                 {
@@ -499,7 +499,7 @@ final class PrologParser
                             	lastParenthesis = false;
 
                                 if(lastObj instanceof PrologObject)
-                                    throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "operator_expected(" + ((PrologObject)lastObj).toString(m_opManager) + ")");
+                                    throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "operator_expected(" + ((PrologObject)lastObj).toString(m_opManager) + ')');
 
                                 PrologObject term = translateTerm(STATE_SQUARE_BRACKET, lnReader);
 
@@ -551,7 +551,7 @@ final class PrologParser
                                 {
                                     if(lastObj instanceof PrologObject)
                                     {
-                                        throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "operator_expected(" + ((PrologObject)lastObj).toString(m_opManager) + ")");
+                                        throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "operator_expected(" + ((PrologObject)lastObj).toString(m_opManager) + ')');
                                     }
                                     else
                                     {
@@ -595,7 +595,7 @@ final class PrologParser
                             	lastParenthesis = false;
 
                                 if(lastObj instanceof PrologObject)
-                                    throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "operator_expected(" + ((PrologObject)lastObj).toString(m_opManager) + ")");
+                                    throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "operator_expected(" + ((PrologObject)lastObj).toString(m_opManager) + ')');
 
                                 PrologObject term = translateTerm(STATE_SPECIAL_BRACKET, lnReader);
                                 termStack.push(term);
@@ -643,7 +643,7 @@ final class PrologParser
                                 {
                                 	if(curOp.getName().equals(",") && !quoted)
                                 	{
-                                		throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(" + curOp.getName() + ")");
+                                		throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(" + curOp.getName() + ')');
                                 	}
                                 	else if(curOp.getPrefix() != null)
                                     {
@@ -668,7 +668,7 @@ final class PrologParser
                                                 		Operator op = m_opManager.get(((Functor)lastObj).getFriendlyName());
                                                 		if(curOp.getPrecedence() == op.getPrecedence() && curOp.isNonAssoc() && !lastParenthesis)
                                                 		{
-                                                			throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "not_assoc_operator(" + lastObj + ")");
+                                                			throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "not_assoc_operator(" + lastObj + ')');
                                                 		}
                                                 	}
 
@@ -779,7 +779,7 @@ final class PrologParser
                                             }
                                             else //prefix
                                             {
-                                                throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(" + curOp.getName() + ")");
+                                                throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(" + curOp.getName() + ')');
                                             }
                                         }
                                         else //if(lastObj instanceof Operator)
@@ -790,7 +790,7 @@ final class PrologParser
                                             	if(lastObj instanceof Operator)
                                             	{
                                             		if(((Operator)lastObj).isPrefix() && (curOp.getPrecedence() == ((Operator)lastObj).getPrecedence()) && ((Operator)lastObj).isNonAssoc())
-                                            			throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "not_assoc_operator(" + ((Operator)lastObj).getName() + ")");
+                                            			throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "not_assoc_operator(" + ((Operator)lastObj).getName() + ')');
                                             	}
 
                                                 termStack.push(curOp);
@@ -814,7 +814,7 @@ final class PrologParser
                                                           lastObj = null;
                                                     	}
                                                     	else
-                                                    		throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(" + curOp.getName() + ")");
+                                                    		throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(" + curOp.getName() + ')');
                                                     }
                                                     else
                                                     {
@@ -961,7 +961,7 @@ final class PrologParser
                             {
                                 if(lastObj instanceof PrologObject)
                                 {
-                                    throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "operator_expected(" + ((PrologObject)lastObj).toString(m_opManager) + ")");
+                                    throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "operator_expected(" + ((PrologObject)lastObj).toString(m_opManager) + ')');
                                 }
                                 else
                                 {
@@ -990,20 +990,14 @@ final class PrologParser
             return obj;
 
         }
-        catch(IOException ex)
+        catch(IOException | NumberFormatException ex)
         {
             throw new JIPJVMException(ex);
-        }
-        catch (NumberFormatException ex)
-        {
-            //ex.printStackTrace();
-            throw new JIPJVMException(ex);
-        }
-        catch (ClassCastException ex)
+        } catch (ClassCastException ex)
         {
             ex.printStackTrace();
             if(tok != null)
-                throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(" + tok.m_strToken + ")");
+                throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(" + tok.m_strToken + ')');
                 //throw syntaxError(tok.m_strToken, null);
             else
                 throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(unknown)");
@@ -1011,7 +1005,7 @@ final class PrologParser
         }
     }
 
-    private final PrologObject resolveOperator(Stack termStack, Operator op) throws JIPSyntaxErrorException
+    private PrologObject resolveOperator(Stack termStack, Operator op) throws JIPSyntaxErrorException
     {
         //        System.out.println(termStack.peek());
         PrologObject obj1 = (PrologObject)termStack.pop();
@@ -1090,7 +1084,7 @@ final class PrologParser
                     if(((Operator)obj2).getInfix() != null)
                     	return makeFunctor(Atom.createAtom(((Operator)obj2).getName()), new ConsCell(Atom.createAtom(op.getName()), obj1));
                     else
-                        throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(" + obj1 + ")");
+                        throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(" + obj1 + ')');
                 }
             }
 
@@ -1115,18 +1109,17 @@ final class PrologParser
         }
         else
         {
-            throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(" + op.getName() + ")");
+            throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(" + op.getName() + ')');
             //throw syntaxError(op.getName(), null);
         }
     }
 
-    private final PrologObject resolveStack(Stack termStack) throws JIPSyntaxErrorException
+    private PrologObject resolveStack(Stack termStack) throws JIPSyntaxErrorException
     {
         if(termStack.isEmpty())
             return null;
 
-        Object obj;
-        obj = termStack.pop();
+        Object obj = termStack.pop();
 
         while(!termStack.isEmpty())
         {
@@ -1151,17 +1144,17 @@ final class PrologParser
         }
 
         if(!(obj instanceof PrologObject))
-        	throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(" + obj.toString() + ")");
+        	throw new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), "unexpected_term(" + obj.toString() + ')');
 
         return (PrologObject)obj;
     }
 
-    private final static PrologObject makeFunctor(Atom funct, ConsCell params)
+    private static PrologObject makeFunctor(Atom funct, ConsCell params)
     {
         if(params != null)
         {
 
-            String strFunctor = funct.getName() + "/" + params.getHeight();
+            String strFunctor = funct.getName() + '/' + params.getHeight();
 //          System.out.println(strFunctor);
             if(BuiltInFactory.isBuiltIn(strFunctor))
             {
@@ -1199,7 +1192,7 @@ final class PrologParser
         }
     }
 
-    private final static List makeList(ConsCell params)
+    private static List makeList(ConsCell params)
     {
         if(params.getTail() != null)
         {
@@ -1211,7 +1204,7 @@ final class PrologParser
         }
     }
 
-    private final static ConsCell makeCons(ConsCell params)
+    private static ConsCell makeCons(ConsCell params)
     {
         if(params.getTail() != null)
         {

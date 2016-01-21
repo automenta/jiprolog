@@ -52,7 +52,7 @@ final class Length2 extends BuiltIn
         }
         else if(pred instanceof Atom)
         {
-            return Expression.createNumber(((Atom)pred).getName().toString().length()).unify(getParam(2), varsTbl);
+            return Expression.createNumber(((Atom) pred).getName().length()).unify(getParam(2), varsTbl);
         }
         else if(pred instanceof Expression)
         {

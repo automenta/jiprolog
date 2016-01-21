@@ -6,8 +6,6 @@ package com.ugos.jiprolog.engine;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import com.ugos.jiprolog.engine.WAM.Node;
-
 /**
  * @author UgoChirico
  *
@@ -43,65 +41,36 @@ public class Catch3 extends Call1
 		}
 
 
-		wam.addExceptionListener(new ExceptionListener()
-		{
-			public boolean notifyException(JIPRuntimeException ex)
-			{
-				if(catcher.unifiable(ex.getTerm().getTerm()))
-				{
-					catcher.unify(ex.getTerm().getTerm().copy(true), varsTbl);
+		wam.addExceptionListener(ex -> {
+            if(catcher.unifiable(ex.getTerm().getTerm()))
+            {
+                catcher.unify(ex.getTerm().getTerm().copy(true), varsTbl);
 
-					WAM.Node curNode = wam.m_curNode;
-					while(curNode != null && curNode != thisNode)
-            		{
-            			if(curNode.m_varTbl != null)
-            			{
-	                        Enumeration en = curNode.m_varTbl.keys();
-	                        while(en.hasMoreElements())
-	                            ((Clearable)en.nextElement()).clear();
-            			}
+                WAM.Node curNode = wam.m_curNode;
+                while(curNode != null && curNode != thisNode)
+                {
+                    if(curNode.m_varTbl != null)
+                    {
+                        Enumeration en = curNode.m_varTbl.keys();
+                        while(en.hasMoreElements())
+                            ((Clearable)en.nextElement()).clear();
+                    }
 
-	            		// call precedente
-	                    curNode = curNode.m_previous;
-            		}
+                    // call precedente
+                    curNode = curNode.m_previous;
+                }
 
-					wam.m_curNode = thisNode;
+                wam.m_curNode = thisNode;
 
-					final PrologObject handler = getGoal(getRealTerm(getParam(3)));
+                final PrologObject handler = getGoal(getRealTerm(getParam(3)));
 
-					thisNode.m_injectedBody = new ConsCell(handler, null);
+                thisNode.m_injectedBody = new ConsCell(handler, null);
 
-					return true;
-				}
-				else
-					return false;
-			}
-//			public WAM.Node notifyException(JIPRuntimeException ex)
-//			{
-//				if(catcher.unify(ex.exceptionTerm, varsTbl))
-//				{
-//					WAM.Node curNode = wam.m_curNode;
-//					while(curNode != thisNode)
-//            		{
-//            			if(curNode.m_varTbl != null)
-//            			{
-//	                        Enumeration en = curNode.m_varTbl.keys();
-//	                        while(en.hasMoreElements())
-//	                            ((Clearable)en.nextElement()).clear();
-//            			}
-//
-//	            		// call precedente
-//	                    curNode = curNode.m_previous;
-//            		}
-//
-//					WAM.Node node = new Node(new ConsCell(handler, null), null, thisNode, thisNode.m_strModule);
-//foo(X) :-	Y is X * 2, throw(test(Y)).
-//					return node;
-//				}
-//				else
-//					return null;
-//			}
-		});
+                return true;
+            }
+            else
+                return false;
+        });
 
 		thisNode.m_injectedBody = new ConsCell(goal, new ConsCell(new BuiltInPredicate("$reh/0", null), null));
 

@@ -23,8 +23,9 @@ package com.ugos.jiprolog.extensions.system;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
-import java.io.*;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Hashtable;
 
 public class Time8 extends JIPXCall
 {

@@ -23,7 +23,7 @@ package com.ugos.jiprolog.engine;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Hashtable;
 
 final class LoadLibrary1 extends BuiltIn
 {
@@ -56,11 +56,11 @@ final class LoadLibrary1 extends BuiltIn
 //        strPath = strPath.replace('\\', '/');
 
         //System.out.println(m_strSearchDir);
-        String strFileName[] = new String[1];
-        String strCurDir[]   = new String[1];
 
         try
         {
+            String[] strCurDir = new String[1];
+            String[] strFileName = new String[1];
             final InputStream ins = StreamManager.getStreamManager().getInputStream(strPath, getJIPEngine().getSearchPath(), strFileName, strCurDir);
             ins.close();
             getJIPEngine().loadLibrary(strFileName[0]);

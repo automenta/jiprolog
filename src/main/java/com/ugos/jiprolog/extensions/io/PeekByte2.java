@@ -19,17 +19,18 @@
 
 package com.ugos.jiprolog.extensions.io;
 
-import java.io.*;
-import java.util.*;
-
-import com.ugos.jiprolog.util.io.*;
 import com.ugos.jiprolog.engine.*;
+import com.ugos.jiprolog.util.io.PushbackLineNumberInputStream;
+
+import java.io.IOException;
+import java.util.Hashtable;
+import java.util.Properties;
 
 public final class PeekByte2 extends JIPXCall
 {
 //    private JIPTerm m_term;
 
-   private final int peekByte(PushbackLineNumberInputStream ins)
+   private static int peekByte(PushbackLineNumberInputStream ins)
     {
         try
         {

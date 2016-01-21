@@ -20,7 +20,8 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 /**
  * JIPClausesDatabase is the base class for external database of clauses<br>
@@ -36,21 +37,20 @@ import java.util.*;
  * Home Page: http://www.ugochirico.com
  * @see com.ugos.jiprolog.engine.JIPClausesEnumeration
  */
-public abstract class JIPClausesDatabase extends Object
-{
+public abstract class JIPClausesDatabase {
     private String      m_strFuncName;
     private int         m_nArity;
     private int         m_nIndex = 1; // default for first argument indexing
 
-    private Hashtable<String, JIPClausesDatabase> m_propTbl;
+    private final Hashtable<String, JIPClausesDatabase> m_propTbl;
 
     private JIPEngine   m_jip;
 
     /** Constucts a new JIPClausesDatabase
      */
-    public JIPClausesDatabase()
+    protected JIPClausesDatabase()
     {
-        m_propTbl = new Hashtable<String, JIPClausesDatabase>(4);
+        m_propTbl = new Hashtable<>(4);
     }
 
     /** Returns the name of the functor associated to this database
@@ -86,7 +86,7 @@ public abstract class JIPClausesDatabase extends Object
 
    /** Gets the index for argument indexing. By default it is 1 for first argument indexing
     */
-   public final int getIndex()
+   final int getIndex()
    {
 	   return this.m_nIndex;
    }
@@ -126,7 +126,7 @@ public abstract class JIPClausesDatabase extends Object
      * @see com.ugos.jiprolog.engine.JIPClausesEnumeration
      * @return an enumeration of the clauses contained in this database
      */
-    public abstract Enumeration<JIPClause> clauses(JIPFunctor functor);
+    protected abstract Enumeration<JIPClause> clauses(JIPFunctor functor);
 
     /** Returns an enumeration of the all clauses contained in this database
      * @see com.ugos.jiprolog.engine.JIPClause

@@ -19,12 +19,14 @@
  */
 
 package com.ugos.jiprolog.engine;
-import java.util.*;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 final class Env2 extends BuiltIn
 {
-	PrologObject termKey;
-	Enumeration<String> en;
+	private PrologObject termKey;
+	private Enumeration<String> en;
     public final boolean unify(final Hashtable<Variable, Variable> varsTbl)
     {
         termKey = getParam(1);

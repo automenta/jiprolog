@@ -20,7 +20,7 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.*;
+import java.util.Hashtable;
 
 final class RetractAll1 extends BuiltIn
 {
@@ -36,7 +36,7 @@ final class RetractAll1 extends BuiltIn
 
         boolean bEnd = false;
 
-        while(!bEnd)
+        while(true)
         {
 	        Clause retractedClause = getJIPEngine().getGlobalDB().retract(clause);
 	        if(retractedClause == null)
@@ -46,7 +46,7 @@ final class RetractAll1 extends BuiltIn
 	        }
         }
 
-        return true;
+        //return true;
     }
 
     public final boolean hasMoreChoicePoints()

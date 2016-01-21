@@ -20,12 +20,13 @@
 
 package com.ugos.jiprolog.extensions.database;
 
-import com.ugos.jiprolog.engine.*;
+import com.ugos.jiprolog.engine.JIPClause;
+import com.ugos.jiprolog.engine.JIPClausesEnumeration;
+import com.ugos.jiprolog.engine.JIPRuntimeException;
 
-import java.util.*;
-import java.io.*;
-import java.util.StringTokenizer;
-import java.sql.*;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public class JDBCClausesEnumeration extends JIPClausesEnumeration
 {

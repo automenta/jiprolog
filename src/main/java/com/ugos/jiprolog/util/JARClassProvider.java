@@ -21,9 +21,12 @@
 
 package com.ugos.jiprolog.util;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Questa classe implementa un ClassProvider per file .jar
@@ -72,11 +75,11 @@ public class JARClassProvider extends ClassProvider
     {
         // cerca la classe in tutti i JARs in m_jarVect
         byte[] classBuffer = null;
-        int i = 0;
-                
+
         synchronized(m_jarVect)
         {
             // cerca l'entry in tutti i JARs in m_jarVect
+            int i = 0;
             while(classBuffer == null && i < m_jarVect.size())
             {
                 // try win format
@@ -104,11 +107,11 @@ public class JARClassProvider extends ClassProvider
     protected byte[] readResource(final String nameResource) throws IOException
     {
         byte[] classBuffer = null;
-        int i = 0;
 
         synchronized(m_jarVect)
         {
             // cerca l'entry in tutti i JARs in m_jarVect
+            int i = 0;
             while(classBuffer == null && i < m_jarVect.size())
             {
                 classBuffer = readEntryFromJar((String)m_jarVect.elementAt(i), nameResource);

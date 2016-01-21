@@ -19,7 +19,8 @@
  */
 
 package com.ugos.jiprolog.engine;
-import java.util.*;
+
+import java.util.Hashtable;
 
 final class TermHash4 extends BuiltIn
 {
@@ -37,9 +38,6 @@ final class TermHash4 extends BuiltIn
 
 		if(!((Expression)range).isInteger())
 			throw new JIPTypeException(JIPTypeException.INTEGER, depth);
-
-		if(range == null)
-			throw new JIPInstantiationException();
 
 		if(!(range instanceof Expression))
 			throw new JIPTypeException(JIPTypeException.EVALUABLE, range);

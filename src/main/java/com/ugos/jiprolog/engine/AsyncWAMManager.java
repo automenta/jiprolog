@@ -22,11 +22,11 @@ package com.ugos.jiprolog.engine;
 
 final class AsyncWAMManager implements Runnable
 {
-    WAM             m_wam;
-    PrologObject    m_query;
+    private final WAM             m_wam;
+    final PrologObject    m_query;
     Object          m_result;
 
-    private JIPEngine       m_engine;
+    private final JIPEngine       m_engine;
     private boolean         m_bNext;
     private Thread          m_workerThread;
 

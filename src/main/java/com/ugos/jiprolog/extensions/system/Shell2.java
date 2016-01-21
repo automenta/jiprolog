@@ -52,15 +52,14 @@ public class Shell2 extends JIPXCall
 
         JIPAtom commands = (JIPAtom)term;
 
-        Process proc;
-
         try
         {
         	String runtime = System.getProperty("java.runtime.name").toLowerCase();
         	String os = System.getProperty ("os.name").toLowerCase();
 //			String arch = System.getProperty ("os.arch").toLowerCase();
 
-			if(os.contains("win"))
+            Process proc;
+            if(os.contains("win"))
 			{
 				String cmd = "cmd.exe /C " + commands.getName();
 

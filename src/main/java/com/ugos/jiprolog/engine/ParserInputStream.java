@@ -6,7 +6,10 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 class ParserInputStream extends FilterInputStream
 {

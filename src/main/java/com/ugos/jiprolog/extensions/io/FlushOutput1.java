@@ -22,8 +22,9 @@ package com.ugos.jiprolog.extensions.io;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Hashtable;
 
 public final class FlushOutput1 extends JIPXCall
 {
@@ -46,9 +47,7 @@ public final class FlushOutput1 extends JIPXCall
             }
         }
 
-        OutputStream writer;
-
-    	StreamInfo streamInfo = JIPio.getOutputStreamInfo(output, false);
+        StreamInfo streamInfo = JIPio.getOutputStreamInfo(output, false);
 
 //    	Properties props = streamInfo.getProperties();
 //        if(!(props.getProperty("mode", "").equals("mode(append)")) &&
@@ -56,7 +55,7 @@ public final class FlushOutput1 extends JIPXCall
 //            throw new JIPPermissionException("output", "stream", streamInfo.getAlias());
 
         // Get the stream
-        writer = JIPio.getOutputStream(streamInfo.getHandle(), getJIPEngine());
+        OutputStream writer = JIPio.getOutputStream(streamInfo.getHandle(), getJIPEngine());
 
         try
         {

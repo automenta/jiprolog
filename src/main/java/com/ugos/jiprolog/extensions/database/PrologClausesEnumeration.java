@@ -22,7 +22,9 @@ package com.ugos.jiprolog.extensions.database;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.io.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
 
 public class PrologClausesEnumeration extends JIPClausesEnumeration
 {
@@ -75,13 +77,12 @@ public class PrologClausesEnumeration extends JIPClausesEnumeration
         m_bUsed = false;
            
         String strLine;
-        JIPFunctor func = null;
         try
         {        	
             // read next line
             strLine = m_reader.readLine();            
             
-            while(strLine != null && "".equals(strLine))
+            while(strLine != null && strLine.isEmpty())
             	strLine = m_reader.readLine();
 
             if(strLine == null)
@@ -98,6 +99,7 @@ public class PrologClausesEnumeration extends JIPClausesEnumeration
         }
      
         // parse line
+        JIPFunctor func = null;
         try
         {
             //parse the term extracted

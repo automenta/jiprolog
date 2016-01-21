@@ -20,7 +20,7 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.*;
+import java.util.Hashtable;
 
 final class Functor3 extends BuiltIn
 {
@@ -43,7 +43,6 @@ final class Functor3 extends BuiltIn
 //            if(name == arity)
 //                return false;
 
-            ConsCell newFunc;
             try
             {
                 if(name.unifiable(List.NIL))
@@ -72,6 +71,7 @@ final class Functor3 extends BuiltIn
                 if(!(name instanceof Atom))
                     throw new JIPTypeException(JIPTypeException.ATOM, name);
 
+                ConsCell newFunc;
                 if(((Atom)name).getName().equals(".") )
                 {
                     if((int)((Expression)arity).getValue() == 2)
@@ -90,7 +90,7 @@ final class Functor3 extends BuiltIn
                 }
 
                 // generate new functor
-                String strFuncName = new StringBuilder(((Atom)name).getName()).append("/").append((int)((Expression)arity).getValue()).toString();
+                String strFuncName = new StringBuilder(((Atom)name).getName()).append('/').append((int)((Expression)arity).getValue()).toString();
                 // Check if BuiltIn
                 if (BuiltInFactory.isBuiltIn(strFuncName))
                 {

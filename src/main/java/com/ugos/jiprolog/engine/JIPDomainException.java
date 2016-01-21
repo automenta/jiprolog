@@ -49,8 +49,8 @@ write_option
  */
 public class JIPDomainException extends JIPRuntimeException {
 
-	private String domain;
-	private PrologObject culprit;
+	private final String domain;
+	private final PrologObject culprit;
 
 	JIPDomainException(String domain, PrologObject culprit)
 	{

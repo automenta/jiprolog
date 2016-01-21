@@ -11,7 +11,7 @@ import java.util.Hashtable;
  */
 public class CallN extends BuiltIn {
 
-	WAM wam;
+	private WAM wam;
 
 	@Override
 	public boolean unify(Hashtable<Variable, Variable> varsTbl)
@@ -134,7 +134,7 @@ public class CallN extends BuiltIn {
 		return wam != null;
 	}
 
-	private final WAM getNewWAM()
+	private WAM getNewWAM()
     {
 		WAM wam = getWAM();
         if(wam instanceof WAMTrace)

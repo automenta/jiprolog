@@ -20,8 +20,9 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.io.*;
-import java.util.*;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.util.Hashtable;
 
 class Write1 extends BuiltIn
 {
@@ -31,7 +32,7 @@ class Write1 extends BuiltIn
         return true;
     }
 
-    protected final void print(final PrologObject obj)
+    private void print(final PrologObject obj)
     {
         try {
 			new PrintStream(getJIPEngine().getCurrentOutputStream(),true, getJIPEngine().getEncoding()).print(obj.toString(getJIPEngine()));
@@ -51,7 +52,7 @@ class Write1 extends BuiltIn
 		}
     }
 
-    protected final void print(final Object obj)
+    final void print(final Object obj)
     {
         try {
 			new PrintStream(getJIPEngine().getCurrentOutputStream(), true, getJIPEngine().getEncoding()).print(obj);

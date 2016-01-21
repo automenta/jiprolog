@@ -23,7 +23,7 @@ package com.ugos.jiprolog.extensions.terms;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
+import java.util.Hashtable;
 
 public class NumberChars2 extends JIPXCall
 {
@@ -78,12 +78,7 @@ public class NumberChars2 extends JIPXCall
 				{
 
                 	String strVal;
-                	if (chars instanceof JIPList)
-    					strVal = (JIPString.create((JIPList)chars, true)).getStringValue();
-                	else if (chars instanceof JIPString)
-                		strVal = ((JIPString)chars).getStringValue();
-                	else
-                        throw new JIPTypeException(JIPTypeException.LIST, chars);
+                    strVal = (JIPString.create((JIPList)chars, true)).getStringValue();
 
 					// remove leading whitespace
 					strVal = strVal.replaceAll("^\\s+", "");

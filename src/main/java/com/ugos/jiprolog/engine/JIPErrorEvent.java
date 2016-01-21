@@ -30,8 +30,8 @@ package com.ugos.jiprolog.engine;
  */
 public class JIPErrorEvent extends JIPEvent
 {
-    private String m_strErr;
-    private JIPRuntimeException m_ex;
+    private final String m_strErr;
+    private final JIPRuntimeException m_ex;
 
     /**
     * ID of an Error Event

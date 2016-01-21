@@ -21,9 +21,11 @@
 
 package com.ugos.jiprolog.extensions.terms;
 
-import com.ugos.jiprolog.engine.*;
+import com.ugos.jiprolog.engine.JIPCons;
+import com.ugos.jiprolog.engine.JIPTerm;
+import com.ugos.jiprolog.engine.JIPXCall;
 
-import java.util.*;
+import java.util.Hashtable;
 
 public class CopyTerm2 extends JIPXCall
 {

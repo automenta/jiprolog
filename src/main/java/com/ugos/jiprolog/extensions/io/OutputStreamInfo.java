@@ -2,10 +2,10 @@ package com.ugos.jiprolog.extensions.io;
 
 import java.io.OutputStream;
 
-public class OutputStreamInfo extends StreamInfo
+class OutputStreamInfo extends StreamInfo
 {
 	private static int refCounter = 2;
-	private static int MAX_VALUE = Integer.MAX_VALUE - 1;
+	private static final int MAX_VALUE = Integer.MAX_VALUE - 1;
 	OutputStream m_stream;
 
     public OutputStreamInfo(String name, int handle, String mode)

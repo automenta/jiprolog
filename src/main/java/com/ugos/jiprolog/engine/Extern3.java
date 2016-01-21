@@ -20,7 +20,7 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.*;
+import java.util.Hashtable;
 
 final class Extern3 extends BuiltIn
 {
@@ -80,7 +80,7 @@ final class Extern3 extends BuiltIn
         return true;
     }
 
-    protected final void apply(String strFunctName, int nArity, String strModuleName, String strXClassName, String strAttributes)
+    private void apply(String strFunctName, int nArity, String strModuleName, String strXClassName, String strAttributes)
     {
         try
         {
@@ -101,26 +101,11 @@ final class Extern3 extends BuiltIn
             jipDB.setJIPEngine(getJIPEngine());
             jipDB.setAttributes(strAttributes);
 
-            getJIPEngine().getGlobalDB().addClausesDatabase(jipDB, strModuleName, new StringBuilder(strFunctName).append("/").append(nArity).toString());
+            getJIPEngine().getGlobalDB().addClausesDatabase(jipDB, strModuleName, new StringBuilder(strFunctName).append('/').append(nArity).toString());
         }
-        catch(ClassNotFoundException ex)
+        catch(ClassNotFoundException | ClassCastException | InstantiationException | IllegalAccessException ex)
         {
         	throw JIPExistenceException.createProcedureException(Atom.createAtom(strXClassName));
-        }
-        catch(IllegalAccessException ex)
-        {
-        	throw JIPExistenceException.createProcedureException(Atom.createAtom(strXClassName));
-//            throw JIPRuntimeException.create(38, strXClassName);
-        }
-        catch(InstantiationException ex)
-        {
-        	throw JIPExistenceException.createProcedureException(Atom.createAtom(strXClassName));
-//            throw JIPRuntimeException.create(39, strXClassName);
-        }
-        catch(ClassCastException ex)
-        {
-        	throw JIPExistenceException.createProcedureException(Atom.createAtom(strXClassName));
-//            throw JIPRuntimeException.create(40, strXClassName);
         }
     }
 }

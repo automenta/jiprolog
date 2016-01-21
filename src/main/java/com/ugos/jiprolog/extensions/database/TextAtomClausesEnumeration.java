@@ -22,8 +22,10 @@ package com.ugos.jiprolog.extensions.database;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.Enumeration;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.util.StringTokenizer;
 
 public class TextAtomClausesEnumeration extends JIPClausesEnumeration
@@ -31,7 +33,7 @@ public class TextAtomClausesEnumeration extends JIPClausesEnumeration
     private LineNumberReader m_reader;
     private JIPClause        m_curClause;
     private boolean          m_bUsed;
-    private String      	separator;
+    private final String      	separator;
 
 
     public TextAtomClausesEnumeration(TextAtomClausesDatabase db)
@@ -108,8 +110,6 @@ public class TextAtomClausesEnumeration extends JIPClausesEnumeration
         //separate parameters by StringTokenizer
         StringTokenizer stk = new StringTokenizer(strLine, separator, true);
 
-        String  strTerm;
-        JIPTerm term;
         JIPCons list = null;
 
         int i = 0;
@@ -118,8 +118,9 @@ public class TextAtomClausesEnumeration extends JIPClausesEnumeration
             i++;
 
             // extract next term
-            strTerm = stk.nextToken();
+            String strTerm = stk.nextToken();
             stk.nextToken(); // delimiter
+            JIPTerm term;
             try
             {
                 //parse the term extracted

@@ -19,7 +19,8 @@
  */
 
 package com.ugos.jiprolog.engine;
-import java.util.*;
+
+import java.util.Hashtable;
 
 final class Univ2 extends BuiltIn
 {
@@ -87,7 +88,7 @@ final class Univ2 extends BuiltIn
                             ConsCell funparms = ((List)params).getConsCell();
 
 //                          System.out.println("funparams " + funparms);
-                            final String strName = ((Atom)head).getName() + "/" + Integer.toString(nArity);
+                            final String strName = ((Atom)head).getName() + '/' + Integer.toString(nArity);
                             final Atom name = Atom.createAtom(strName);
                             if(BuiltInFactory.isBuiltIn(strName))
                                 list = new BuiltInPredicate(name, funparms);

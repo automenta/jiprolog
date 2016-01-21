@@ -21,14 +21,16 @@ package com.ugos.jiprolog.extensions.io;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Hashtable;
+import java.util.Properties;
 
 public final class GetCode2 extends JIPXCall
 {
     private int streamHandle;
 
-    protected final int readNextChar(InputStream ins)
+    private int readNextChar(InputStream ins)
     {
         try
         {
@@ -79,8 +81,6 @@ public final class GetCode2 extends JIPXCall
 
         final InputStream ins = JIPio.getInputStream(streamHandle, getJIPEngine());
 
-        int c = -1;
-
         if (code instanceof JIPVariable && ((JIPVariable)code).isBounded())
         {
             code = code.getValue();
@@ -92,7 +92,8 @@ public final class GetCode2 extends JIPXCall
 	        	throw new JIPRepresentationException("in_character_code");
         }
 
-		if(properties.getProperty("end_of_stream").equals("end_of_stream(past)"))
+        int c = -1;
+        if(properties.getProperty("end_of_stream").equals("end_of_stream(past)"))
 		{
 			if(properties.getProperty("eof_action").equals("eof_action(error)"))
 				throw new JIPPermissionException("input", "past_end_of_stream", sinfo.getAlias());

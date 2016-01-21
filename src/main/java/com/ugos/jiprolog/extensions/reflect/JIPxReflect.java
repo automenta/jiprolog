@@ -21,12 +21,12 @@
 
 package com.ugos.jiprolog.extensions.reflect;
 
-import java.math.*;
-import java.util.*;
-
 import com.ugos.jiprolog.engine.*;
 
-public class JIPxReflect
+import java.util.Hashtable;
+import java.util.Vector;
+
+class JIPxReflect
 {
     public static final int    ERR_UNBOUNDED = 2101;
     public static final String STR_UNBOUNDED = "Unexpected unbounded variable found";
@@ -52,7 +52,7 @@ public class JIPxReflect
     public static final int    ERR_OBJECT_NOT_FOUND = 2108;
     public static final String STR_OBJECT_NOT_FOUND = "Object not found";
 
-    private static Hashtable s_classHandleTbl;
+    private static final Hashtable s_classHandleTbl;
 
     static
     {
@@ -98,12 +98,12 @@ public class JIPxReflect
         }
         else if(term instanceof Character)
         {
-            return JIPNumber.create(((Character)term).charValue());
+            return JIPNumber.create((Character) term);
             //return JIPNumber.create(Character.getNumericValue(((Character)term).charValue()));
         }
         else if(term instanceof Boolean)
         {
-            if(((Boolean)term).booleanValue())
+            if((Boolean) term)
                 return JIPAtom.create("true");
             else
                 return JIPAtom.create("false");
@@ -131,13 +131,13 @@ public class JIPxReflect
                 int nVal = (int)num.getDoubleValue();
 
                 if(Math.abs(nVal) > Integer.MAX_VALUE)
-                    return new Long(nVal);
+                    return (long) nVal;
                 else
-                    return new Integer(nVal);
+                    return nVal;
             }
             else
             {
-                return new Double(num.getDoubleValue());
+                return num.getDoubleValue();
             }
         }
         else if(term instanceof JIPAtom)
@@ -154,7 +154,7 @@ public class JIPxReflect
             }
             else if(strAtom.equals("true") || strAtom.equals("false"))
             {
-                return new Boolean(strAtom);
+                return Boolean.valueOf(strAtom);
             }
             else
             {
@@ -172,7 +172,7 @@ public class JIPxReflect
         }
     }
 
-    static Class[] getParamsClass(JIPTerm className) throws NoSuchMethodException, ClassNotFoundException
+    static Class[] getParamsClass(JIPTerm className) throws ClassNotFoundException
     {
         if(className instanceof JIPAtom)
         {
@@ -191,41 +191,34 @@ public class JIPxReflect
             {
                 String strClassName = ((JIPAtom)getTerm(params.getHead())).getName();
                 Class paramClass;
-                if(strClassName.equals("int"))
-                {
-                    paramClass = Integer.TYPE;
-                }
-                else if(strClassName.equals("char"))
-                {
-                    paramClass = Character.TYPE;
-                }
-                else if(strClassName.equals("byte"))
-                {
-                    paramClass = Byte.TYPE;
-                }
-                else if(strClassName.equals("boolean"))
-                {
-                    paramClass = Boolean.TYPE;
-                }
-                else if(strClassName.equals("float"))
-                {
-                    paramClass = Float.TYPE;
-                }
-                else if(strClassName.equals("double"))
-                {
-                    paramClass = Double.TYPE;
-                }
-                else if(strClassName.equals("long"))
-                {
-                    paramClass = Long.TYPE;
-                }
-                else if(strClassName.equals("short"))
-                {
-                    paramClass = Short.TYPE;
-                }
-                else
-                {
-                    paramClass = className.getClass().forName(strClassName);
+                switch (strClassName) {
+                    case "int":
+                        paramClass = Integer.TYPE;
+                        break;
+                    case "char":
+                        paramClass = Character.TYPE;
+                        break;
+                    case "byte":
+                        paramClass = Byte.TYPE;
+                        break;
+                    case "boolean":
+                        paramClass = Boolean.TYPE;
+                        break;
+                    case "float":
+                        paramClass = Float.TYPE;
+                        break;
+                    case "double":
+                        paramClass = Double.TYPE;
+                        break;
+                    case "long":
+                        paramClass = Long.TYPE;
+                        break;
+                    case "short":
+                        paramClass = Short.TYPE;
+                        break;
+                    default:
+                        paramClass = className.getClass().forName(strClassName);
+                        break;
                 }
 
                 classVect.addElement(paramClass);

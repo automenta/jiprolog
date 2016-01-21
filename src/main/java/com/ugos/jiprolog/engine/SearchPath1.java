@@ -23,12 +23,9 @@ package com.ugos.jiprolog.engine;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.FileAlreadyExistsException;
+import java.util.Hashtable;
 import java.util.zip.ZipFile;
-import java.util.*;
 
 final class SearchPath1 extends BuiltIn
 {
@@ -74,12 +71,7 @@ final class SearchPath1 extends BuiltIn
         {
         	throw JIPExistenceException.createSourceSynkException(Atom.createAtom(strSearchDir));
 //        	 throw JIPRuntimeException.create(18, strSearchDir);
-	    }
-	    catch(MalformedURLException ex)
-	    {
-	        throw new JIPJVMException(ex);
-	    }
-	    catch(SecurityException ex)
+	    } catch(SecurityException ex)
 	    {
 	    	throw new JIPPermissionException("access", "source_sink", Atom.createAtom(strSearchDir));
 //	        throw JIPRuntimeException.create(9, ex.getMessage());

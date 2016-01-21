@@ -22,7 +22,7 @@ package com.ugos.jiprolog.engine;
 
 class UndefinedPredicateException extends JIPExistenceException
 {
-    private String m_strPredDef;
+    private final String m_strPredDef;
 
     UndefinedPredicateException(final Functor term)
     {

@@ -21,10 +21,11 @@
 
 package com.ugos.jiprolog.extensions.system;
 
-import com.ugos.jiprolog.engine.*;
+import com.ugos.jiprolog.engine.JIPCons;
+import com.ugos.jiprolog.engine.JIPXCall;
 
-import java.io.*;
-import java.util.*;
+import java.io.PrintStream;
+import java.util.Hashtable;
 
 public class Statistics0 extends JIPXCall
 {

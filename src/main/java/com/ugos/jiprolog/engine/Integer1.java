@@ -19,7 +19,8 @@
  */
 
 package com.ugos.jiprolog.engine;
-import java.util.*;
+
+import java.util.Hashtable;
 
 final class Integer1 extends BuiltIn
 {

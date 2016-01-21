@@ -22,12 +22,12 @@ package com.ugos.jiprolog.engine;
 
 import java.util.Vector;
 
-class EventNotifier extends Object implements Runnable
+class EventNotifier implements Runnable
 {
     private final Vector           m_EventListenerVect = new Vector(5);
     private final Vector           m_TraceListenerVect = new Vector(1);
     private final Vector           m_eventsVect = new Vector();
-    private JIPEngine              m_jipEngine;
+    private final JIPEngine              m_jipEngine;
 
     private Thread m_workerThread;
 
@@ -99,7 +99,7 @@ class EventNotifier extends Object implements Runnable
         }
         else if(!bEnabled && m_workerThread != null)
         {
-            notify();
+            notifyAll();
             //m_workerThread.stop();
             m_workerThread = null;
         }
@@ -137,7 +137,7 @@ class EventNotifier extends Object implements Runnable
         return e;
     }
 
-    private final synchronized void notify(final JIPEvent e)
+    private synchronized void notify(final JIPEvent e)
     {
 //        System.out.println("notify " + e.getID());
 //        System.out.println("notify " + e.getTerm());
@@ -146,14 +146,14 @@ class EventNotifier extends Object implements Runnable
         if(!m_bAvailable)
         {
             m_bAvailable = true;
-            notify();
+            notifyAll();
 //            System.out.println("notify 3");
         }
 
 //        System.out.println("notify 4");
     }
 
-    private final synchronized JIPEvent getEvent()
+    private synchronized JIPEvent getEvent()
     {
         if(!m_bAvailable)
         {

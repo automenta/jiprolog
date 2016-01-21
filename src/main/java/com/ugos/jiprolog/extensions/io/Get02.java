@@ -21,12 +21,14 @@ package com.ugos.jiprolog.extensions.io;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Hashtable;
+import java.util.Properties;
 
 public final class Get02 extends JIPXCall
 {
-    protected final int readNextChar(InputStream ins)
+    private static int readNextChar(InputStream ins)
     {
         try
         {
@@ -72,14 +74,13 @@ public final class Get02 extends JIPXCall
         if(streamHandle == JIPEngine.USER_INPUT_HANDLE)
             getJIPEngine().notifyEvent(JIPEvent.ID_WAITFORUSERINPUT, getPredicate(), getQueryHandle());
 
-        JIPTerm term;
         int c = readNextChar(ins);
         if(c == -1)
         {
         	streamInfo.setEndOfStream("past");
         }
 
-        term = JIPNumber.create(c);
+        JIPTerm term = JIPNumber.create(c);
 
         if(streamHandle == JIPEngine.USER_INPUT_HANDLE)
             getJIPEngine().notifyEvent(JIPEvent.ID_USERINPUTDONE, getPredicate(), getQueryHandle());

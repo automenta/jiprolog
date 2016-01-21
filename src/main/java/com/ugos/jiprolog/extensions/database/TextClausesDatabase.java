@@ -22,12 +22,14 @@ package com.ugos.jiprolog.extensions.database;
 
 import com.ugos.jiprolog.engine.*;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Enumeration;
-import java.io.*;
 
 public class TextClausesDatabase extends JIPClausesDatabase
 {
-    public final static String SEPARATOR = "#";
+    private final static String SEPARATOR = "#";
 
     private PrintWriter m_writer;
     private String      m_strFileName;
@@ -80,14 +82,13 @@ public class TextClausesDatabase extends JIPClausesDatabase
             JIPCons params = fun.getParams();
 
             JIPCons tail = params;
-            String strVal;
 
             while(tail != null)
             {
                 JIPTerm head = tail.getHead();
 
                 // if is an unbounded variable print only the name
-                strVal = head.toString();
+                String strVal = head.toString();
                 if(head instanceof JIPVariable)
                     if (!((JIPVariable)head).isBounded())
                         strVal = ((JIPVariable)head).getName();

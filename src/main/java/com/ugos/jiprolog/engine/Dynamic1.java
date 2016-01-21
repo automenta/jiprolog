@@ -19,7 +19,9 @@
  */
 
 package com.ugos.jiprolog.engine;
-import java.util.*;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 class Dynamic1 extends Multifile1
 {

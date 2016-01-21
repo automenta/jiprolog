@@ -23,7 +23,7 @@ package com.ugos.jiprolog.extensions.terms;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
+import java.util.Hashtable;
 
 public class Name2 extends JIPXCall
 {
@@ -56,7 +56,7 @@ public class Name2 extends JIPXCall
         else if (atom instanceof JIPAtom)
         {
             String strAtom = ((JIPAtom)atom).getName();
-            if(strAtom.equals(""))
+            if(strAtom.isEmpty())
             {
                 atom = JIPList.NIL;
             }
@@ -103,7 +103,7 @@ public class Name2 extends JIPXCall
                 {
 	                try
 	                {
-	                    double dbVal = Double.valueOf(strVal).doubleValue();
+	                    double dbVal = Double.valueOf(strVal);
 	                    string = JIPNumber.create(dbVal);
 	                }
 	                catch(NumberFormatException ex)

@@ -14,7 +14,7 @@ public class JIPRepresentationException extends JIPRuntimeException {
 	 *
 	 */
 
-	private String typeError;
+	private final String typeError;
 
 	public JIPRepresentationException(String typeError)
 	{

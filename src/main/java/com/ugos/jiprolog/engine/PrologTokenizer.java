@@ -20,30 +20,30 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.io.*;
-import java.math.BigInteger;
+import com.ugos.jiprolog.util.ValueEncoder;
 
-import com.ugos.jiprolog.util.*;
+import java.io.IOException;
+import java.math.BigInteger;
 
 class PrologTokenizer
 {
     static final String UPPERCASE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
     static final String LOWERCASE_CHARS = "abcdefghijklmnopqrstuvwxyz";
-    static final String SPECIAL_CHARS   = "+-*/~^<>:?@#$&=.\\";
+    private static final String SPECIAL_CHARS   = "+-*/~^<>:?@#$&=.\\";
     static final String SINGLETON_CHARS = "!\"()|{}[];,";
-    static final String NUMBER_CHARS    = "0123456789";
+    private static final String NUMBER_CHARS    = "0123456789";
     static final String EXPONENT_CHARS  = "+-eE";
     //static final String WHITESPACE_CHARS = "\n\r\t\b\f";
     static final String SIGN_CHARS      = "-+";
-    static final String NUMBER_BINARY_CHARS      = "01";
-    static final String NUMBER_OCTAL_CHARS       = "01234567";
-    static final String NUMBER_HEXADECIMAL_CHARS = "0123456789abcdefABCDEF";
+    private static final String NUMBER_BINARY_CHARS      = "01";
+    private static final String NUMBER_OCTAL_CHARS       = "01234567";
+    private static final String NUMBER_HEXADECIMAL_CHARS = "0123456789abcdefABCDEF";
 
-    static final char   LINECOMMENT_CHAR = '%';
-    static final String OPENCOMMENT_CHAR = "/*";
+    private static final char   LINECOMMENT_CHAR = '%';
+    private static final String OPENCOMMENT_CHAR = "/*";
     static final String CLOSECOMMENT_CHAR = "*/";
-    static final char   QUOTE_CHAR = '\'';
-    static final char   DOUBLEQUOTE_CHAR = '\"';
+    private static final char   QUOTE_CHAR = '\'';
+    private static final char   DOUBLEQUOTE_CHAR = '\"';
 
     private static final int STATE_END          = -1;
     private static final int STATE_NONE         =  0;
@@ -64,7 +64,7 @@ class PrologTokenizer
     private static final int STATE_OCTAL        = 15;
     private static final int STATE_HEXADECIMAL  = 16;
 
-    static final int TOKEN_UNKNOWN            = -1;
+    private static final int TOKEN_UNKNOWN            = -1;
     static final int TOKEN_ATOM               =  1;
     static final int TOKEN_SPECIAL_ATOM       =  2;
     static final int TOKEN_NUMBER             =  3;
@@ -78,8 +78,8 @@ class PrologTokenizer
 
     private Token m_nextToken;
 
-    private ParserReader m_lnReader;
-    private String m_strFileName;
+    private final ParserReader m_lnReader;
+    private final String m_strFileName;
 
     PrologTokenizer(ParserReader lnReader, String strFileName)
     {
@@ -93,9 +93,6 @@ class PrologTokenizer
         // sostituisce il lex
 //        String strTerm = "";
         StringBuilder sbTerm = new StringBuilder();
-        int curChar = -1;
-        int nState = STATE_NONE;
-        int nTokenType = TOKEN_UNKNOWN;
 
         if(m_nextToken != null)
         {
@@ -104,6 +101,9 @@ class PrologTokenizer
             return token;
         }
 
+        int nTokenType = TOKEN_UNKNOWN;
+        int nState = STATE_NONE;
+        int curChar = -1;
         while(nState != STATE_END)
         {
             //m_lnReader.mark(2);
@@ -459,7 +459,7 @@ class PrologTokenizer
                                     int d1 = m_lnReader.read();
                                     // legge il prossimo byte
                                     int d2 = m_lnReader.read();
-                                    String strHexNum = (char)d1 + "" + (char)d2;
+                                    String strHexNum = (char) d1 + String.valueOf((char) d2);
 
                                     try
                                     {
@@ -558,10 +558,9 @@ class PrologTokenizer
                     case STATE_COMMENT:
                         {
                             c = curChar;
-                            int c1;
                             do
                             {
-                                c1 = c;
+                                int c1 = c;
                                 c = m_lnReader.read();
                                 if((c1 == '*') && (c == '/'))
                                     break;
@@ -591,7 +590,7 @@ class PrologTokenizer
 	                            	m_lnReader.unread(c);
 //	                                m_lnReader.pushback();
 	                                sbTerm.append( (char)curChar);//String.valueOf((char)curChar);
-	                                nTokenType = (nState == STATE_QUOTE) ? TOKEN_QUOTE : TOKEN_DBLQUOTE;
+	                                nTokenType = TOKEN_DBLQUOTE;
 	                                nState = STATE_END;
 	                            }
                         	}
@@ -615,7 +614,7 @@ class PrologTokenizer
 	                            	m_lnReader.unread(c);
 //	                                m_lnReader.pushback();
 	                                sbTerm.append( (char)curChar);//String.valueOf((char)curChar);
-	                                nTokenType = (nState == STATE_QUOTE) ? TOKEN_QUOTE : TOKEN_DBLQUOTE;
+	                                nTokenType = TOKEN_QUOTE;
 	                                nState = STATE_END;
 	                            }
                         	}
@@ -626,7 +625,7 @@ class PrologTokenizer
                         }
                         else if(nState == STATE_QUOTE && (curChar == '\r' || curChar == '\n'))
                         {
-                            throw syntaxError("carriage_return_in_quoted_atom('" + sbTerm.toString() + "')");
+                            throw syntaxError("carriage_return_in_quoted_atom('" + sbTerm + "')");
                         }
 //                        else if(curChar == '~')  // edimburgh prolog
 //                        {
@@ -658,12 +657,12 @@ class PrologTokenizer
                             }
                             else if(NUMBER_CHARS.indexOf(c) > -1)
                             {
-                            	String strNum = "" + (char)c;
+                            	String strNum = String.valueOf((char) c);
                             	// legge i prossimi numeri
                                 int d1 = m_lnReader.read();
                                 while(NUMBER_CHARS.indexOf(d1) > -1)
                                 {
-                                	strNum += "" + (char)d1;
+                                	strNum += String.valueOf((char) d1);
                                 	d1 = m_lnReader.read();
                                 }
 
@@ -730,7 +729,7 @@ class PrologTokenizer
                                         int d1 = m_lnReader.read();
                                         // legge il prossimo byte
                                         int d2 = m_lnReader.read();
-                                        String strHexNum = (char)d1 + "" + (char)d2;
+                                        String strHexNum = (char) d1 + String.valueOf((char) d2);
 
                                         try
                                         {
@@ -890,13 +889,13 @@ class PrologTokenizer
         }
     }
 
-    class Token
+    static class Token
     {
         String m_strToken;
         int m_nType;
     }
 
-    JIPSyntaxErrorException syntaxError(String strMsg)
+    private JIPSyntaxErrorException syntaxError(String strMsg)
     {
         return new JIPSyntaxErrorException(m_strFileName, (m_lnReader.getLineNumber() + 1), strMsg);
     }

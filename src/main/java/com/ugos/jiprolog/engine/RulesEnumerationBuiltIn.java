@@ -22,13 +22,13 @@ package com.ugos.jiprolog.engine;
 
 import java.util.Enumeration;
 
-final class RulesEnumerationBuiltIn extends Object implements Enumeration
+final class RulesEnumerationBuiltIn implements Enumeration
 {
 //    private boolean  m_bHasMoreChoicePoints;
-    private Clause   m_currentClause;
+    private final Clause   m_currentClause;
     private final String           m_strModule;
     private final BuiltInPredicate m_query;
-    private PrologRule             m_rule;
+    private final PrologRule             m_rule;
             
     public RulesEnumerationBuiltIn(final BuiltInPredicate query, final String strModule, final WAM wam)
     {

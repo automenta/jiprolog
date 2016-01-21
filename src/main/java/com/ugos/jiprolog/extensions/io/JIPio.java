@@ -32,14 +32,14 @@ public final class JIPio
 {
     public static final int    ERR_IOEXCEPTION  = 2000;
 
-    private static InputStreamInfo user_input = new InputStreamInfo("user_input", JIPEngine.USER_INPUT_HANDLE, "read", "reset");
-    private static OutputStreamInfo user_output = new OutputStreamInfo("user_output", JIPEngine.USER_OUTPUT_HANDLE, "append");
-    private static OutputStreamInfo user_error = new OutputStreamInfo("user_error", JIPEngine.USER_ERROR_HANDLE, "append");
+    private static final InputStreamInfo user_input = new InputStreamInfo("user_input", JIPEngine.USER_INPUT_HANDLE, "read", "reset");
+    private static final OutputStreamInfo user_output = new OutputStreamInfo("user_output", JIPEngine.USER_OUTPUT_HANDLE, "append");
+    private static final OutputStreamInfo user_error = new OutputStreamInfo("user_error", JIPEngine.USER_ERROR_HANDLE, "append");
 
-    public static Hashtable<Integer, InputStreamInfo> itable = new Hashtable<Integer, InputStreamInfo>();
-    public static Hashtable<Integer, OutputStreamInfo> otable = new Hashtable<Integer, OutputStreamInfo>();
+    public static final Hashtable<Integer, InputStreamInfo> itable = new Hashtable<>();
+    public static final Hashtable<Integer, OutputStreamInfo> otable = new Hashtable<>();
 
-    public static Hashtable<String, StreamInfo> iotable = new Hashtable<String, StreamInfo>();
+    private static final Hashtable<String, StreamInfo> iotable = new Hashtable<>();
 
 
     static
@@ -81,7 +81,7 @@ public final class JIPio
     	return otable.keys();
     }
 
-    private static final int put(final OutputStreamInfo obj)
+    private static int put(final OutputStreamInfo obj)
     {
         // put the new enumeration in the table
         otable.put(obj.getHandle(), obj);
@@ -90,7 +90,7 @@ public final class JIPio
         return obj.getHandle();
     }
 
-    private static final int put(final InputStreamInfo obj)
+    private static int put(final InputStreamInfo obj)
     {
         // put the new enumeration in the table
         itable.put(obj.getHandle(), obj);
@@ -100,17 +100,17 @@ public final class JIPio
     }
 
 
-    static final InputStreamInfo getInput(final int handle)
+    private static InputStreamInfo getInput(final int handle)
     {
         return itable.get(handle);
     }
 
-    static final OutputStreamInfo getOutput(final int handle)
+    private static OutputStreamInfo getOutput(final int handle)
     {
         return otable.get(handle);
     }
 
-    private static final void remove(final int handle)
+    private static void remove(final int handle)
     {
         // get iotable (opened file)
     	if(itable.containsKey(handle))
@@ -336,10 +336,10 @@ public final class JIPio
 
     public static StreamInfo getStreamInfo(JIPTerm streamOrAlias) throws JIPExistenceException, JIPDomainException, JIPInstantiationException
     {
-    	StreamInfo sinfo = null;
 
-    	streamOrAlias = streamOrAlias.getValue();
-    	if(streamOrAlias instanceof JIPNumber)
+        streamOrAlias = streamOrAlias.getValue();
+        StreamInfo sinfo = null;
+        if(streamOrAlias instanceof JIPNumber)
     	{
     		sinfo = getStreamInfo((int)((JIPNumber)streamOrAlias).getDoubleValue());
     	}
@@ -396,22 +396,21 @@ public final class JIPio
             return null;
     }
 
-    public static int getStreamHandle(final String alias)
+    private static int getStreamHandle(final String alias)
     {
 //    	for(StreamInfo sinfo : iotable.values())
 //    	{
 //    		if(alias.equals(sinfo.getAlias()))
 //    			return sinfo.getHandle();
 //    	}
-    	StreamInfo sinfo;
 
 //    	System.out.println(alias);
 //    	System.out.println(iotable);
 
     	if(iotable.containsKey(alias))
     	{
-    		sinfo = iotable.get(alias);
-    		return sinfo.getHandle();
+            StreamInfo sinfo = iotable.get(alias);
+            return sinfo.getHandle();
     	}
 
         return 0;

@@ -44,7 +44,7 @@ final class Expression extends PrologObject //implements Serializable
 
     public static Expression createNumber(final String strNum)
     {
-    	final Expression expr = new Expression(Double.valueOf(strNum).doubleValue());
+    	final Expression expr = new Expression(Double.valueOf(strNum));
     	if(strNum.contains("."))
     		expr.floating = true;
 
@@ -90,719 +90,688 @@ final class Expression extends PrologObject //implements Serializable
     {
     }
 
-    public static final Expression compute(PrologObject exp)
-    {
-        if(exp instanceof Variable)
-            exp = ((Variable)exp).getObject();
+    public static final Expression compute(PrologObject exp) {
+        while (true) {
+            if (exp instanceof Variable)
+                exp = ((Variable) exp).getObject();
 
-        if(exp instanceof Expression)
-        {
-            return (Expression)exp;
-        }
-        if(exp instanceof Atom)
-        {
-            final String strExp = ((Atom)exp).getName();
+            if (exp instanceof Expression) {
+                return (Expression) exp;
+            }
+            if (exp instanceof Atom) {
+                final String strExp = ((Atom) exp).getName();
 
-            if (strExp.equals("rand"))
-            {
-                return Expression.createNumber(Math.random());
-            }
-            else if (strExp.equals("e"))
-            {
-                return Expression.createNumber(Math.E);
-            }
-            else if (strExp.equals("pi"))
-            {
-                return Expression.createNumber(Math.PI);
-            }
-            else if (strExp.equals("cputime"))
-            {
-                return Expression.createNumber(System.currentTimeMillis());
-            }
-            else
-            {
-                throw new JIPTypeException(JIPTypeException.EVALUABLE, new Functor(Atom.createAtom(strExp)).getPredicateIndicator());
-            }
-        }
-        else if(exp instanceof Functor)
-        {
-            double dblVal;
+                switch (strExp) {
+                    case "rand":
+                        return Expression.createNumber(Math.random());
+                    case "e":
+                        return Expression.createNumber(Math.E);
+                    case "pi":
+                        return Expression.createNumber(Math.PI);
+                    case "cputime":
+                        return Expression.createNumber(System.currentTimeMillis());
+                    default:
+                        throw new JIPTypeException(JIPTypeException.EVALUABLE, new Functor(Atom.createAtom(strExp)).getPredicateIndicator());
+                }
+            } else if (exp instanceof Functor) {
+                double dblVal;
 
-            try
-            {
-                final Functor  func       = (Functor) exp;
-                final String   strFunName = func.getFriendlyName();
-                final ConsCell params     = func.getParams();
+                try {
+                    final Functor func = (Functor) exp;
+                    final String strFunName = func.getFriendlyName();
+                    final ConsCell params = func.getParams();
 
 //                System.out.println(strFunName);
 //                System.out.println(params);
 //
-                Expression retexp;
-                switch(func.getArity())
-                {
-                    case 1:
-                    	double dVal1;
+                    Expression retexp;
+                    switch (func.getArity()) {
+                        case 1:
+                            double dVal1;
 
-                        if (strFunName.equals("-"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                            switch (strFunName) {
+                                case "-": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal = - dVal1;
+                                    dblVal = -dVal1;
 
-                            retexp = Expression.createNumber(dblVal);
-                            retexp.floating = !exp1.isInteger();
+                                    retexp = Expression.createNumber(dblVal);
+                                    retexp.floating = !exp1.isInteger();
 
-                            if(!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return retexp;
-                        }
-                        else if (strFunName.equals("+"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    return retexp;
+                                }
+                                case "+": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal = dVal1;
-                            retexp = Expression.createNumber(dblVal);
-                            retexp.floating = !exp1.isInteger();
+                                    dblVal = dVal1;
+                                    retexp = Expression.createNumber(dblVal);
+                                    retexp.floating = !exp1.isInteger();
 
-                            if(!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return retexp;
+                                    return retexp;
 
-                        }
-                        else if (strFunName.equals("sin"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                }
+                                case "sin": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.sin(dVal1);
-                        }
-                        else if (strFunName.equals("cos"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    dblVal = Math.sin(dVal1);
+                                    break;
+                                }
+                                case "cos": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.cos(dVal1);
-                        }
-                        else if (strFunName.equals("tan"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    dblVal = Math.cos(dVal1);
+                                    break;
+                                }
+                                case "tan": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.tan(dVal1);
-                        }
-                        else if (strFunName.equals("asin"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    dblVal = Math.tan(dVal1);
+                                    break;
+                                }
+                                case "asin": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.asin(dVal1);
-                        }
-                        else if (strFunName.equals("acos"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    dblVal = Math.asin(dVal1);
+                                    break;
+                                }
+                                case "acos": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.acos(dVal1);
-                        }
-                        else if (strFunName.equals("atan"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    dblVal = Math.acos(dVal1);
+                                    break;
+                                }
+                                case "atan": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.atan(dVal1);
-                        }
-                        else if (strFunName.equals("log"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    dblVal = Math.atan(dVal1);
+                                    break;
+                                }
+                                case "log": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.log(dVal1);
-                        }
-                        else if (strFunName.equals("exp"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    dblVal = Math.log(dVal1);
+                                    break;
+                                }
+                                case "exp": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.exp(dVal1);
-                        }
-                        else if (strFunName.equals("int") || strFunName.equals("integer"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    dblVal = Math.exp(dVal1);
+                                    break;
+                                }
+                                case "int":
+                                case "integer": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.rint(dVal1);
+                                    dblVal = Math.rint(dVal1);
 
-                            if(dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if (strFunName.equals("round"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "round": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.round(dVal1);
+                                    dblVal = Math.round(dVal1);
 
-                            if(dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if (strFunName.equals("ceil") || strFunName.equals("ceiling"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "ceil":
+                                case "ceiling": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.ceil(dVal1);
+                                    dblVal = Math.ceil(dVal1);
 
-                            if(dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if (strFunName.equals("floor") || strFunName.equals("rnd"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "floor":
+                                case "rnd": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.floor(dVal1);
-                            if(dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
-                            	throw new JIPEvaluationException("int_overflow");
+                                    dblVal = Math.floor(dVal1);
+                                    if (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if (strFunName.equals("truncate"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "truncate": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  (int)dVal1;
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if (strFunName.equals("float"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
-                            exp1.floating = true;
-                            dblVal =  dVal1;
-                        }
-                        else if (strFunName.equals("float_fractional_part"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    dblVal = (int) dVal1;
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "float": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
+                                    exp1.floating = true;
+                                    dblVal = dVal1;
+                                    break;
+                                }
+                                case "float_fractional_part": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  dVal1 - (int)dVal1;
-                        }
-                        else if (strFunName.equals("float_integer_part"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    dblVal = dVal1 - (int) dVal1;
+                                    break;
+                                }
+                                case "float_integer_part": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  dVal1 - (int)dVal1;
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if (strFunName.equals("abs"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    dblVal = dVal1 - (int) dVal1;
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "abs": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.abs(dVal1);
-                            retexp = Expression.createNumber(dblVal);
-                            retexp.floating = !exp1.isInteger();
+                                    dblVal = Math.abs(dVal1);
+                                    retexp = Expression.createNumber(dblVal);
+                                    retexp.floating = !exp1.isInteger();
 
-                            if(!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return retexp;
-                        }
-                        else if (strFunName.equals("sqrt"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    return retexp;
+                                }
+                                case "sqrt": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.sqrt(dVal1);
-                        }
-                        else if (strFunName.equals("sign"))
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    dblVal = Math.sqrt(dVal1);
+                                    break;
+                                }
+                                case "sign": {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            if(!exp1.floating && (dVal1 > Integer.MAX_VALUE || dVal1 < Integer.MIN_VALUE))
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (!exp1.floating && (dVal1 > Integer.MAX_VALUE || dVal1 < Integer.MIN_VALUE))
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            if(dVal1 > 0)
-                                dblVal = 1;
-                            else
-                                dblVal = -1;
+                                    if (dVal1 > 0)
+                                        dblVal = 1;
+                                    else
+                                        dblVal = -1;
 
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if(strFunName.equals("\\")) // bitwise negation
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "\\":
+// bitwise negation
+                                {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            if(!exp1.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
+                                    if (!exp1.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
 
-                            dblVal =  ~(int)dVal1;
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if(strFunName.equals("random")) // random
-                        {
-                        	Expression exp1 = Expression.compute(params.getHead());
-                            dVal1 = exp1.m_dValue;
+                                    dblVal = ~(int) dVal1;
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "random":
+// random
+                                {
+                                    Expression exp1 = Expression.compute(params.getHead());
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  Math.random() * dVal1;
-                        }
-                        else
-                        {
+                                    dblVal = Math.random() * dVal1;
+                                    break;
+                                }
+                                default:
 //                        	throw new JIPEvaluationException(JIPEvaluationException.undefined);//.create(2, strFunName + " is unknown");
-                            throw new JIPTypeException(JIPTypeException.EVALUABLE, new Functor(Atom.createAtom(strFunName + "/1"), null).getPredicateIndicator());
+                                    throw new JIPTypeException(JIPTypeException.EVALUABLE, new Functor(Atom.createAtom(strFunName + "/1"), null).getPredicateIndicator());
 
-                        }
+                            }
 
-                        break;
+                            break;
 
-                    case 2:
-                    	PrologObject head = params.getHead();
-                        if(head instanceof Variable)
-                        	head = ((Variable)head).getObject();
+                        case 2:
+                            PrologObject head = params.getHead();
+                            if (head instanceof Variable)
+                                head = ((Variable) head).getObject();
 
-                        if(strFunName.equals("+"))
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                            switch (strFunName) {
+                                case "+": {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                            dblVal =  dVal1 + dVal2;
+                                    dblVal = dVal1 + dVal2;
 
-                            retexp = Expression.createNumber(dblVal);
-                            retexp.floating = !exp1.isInteger() || !exp2.isInteger();
+                                    retexp = Expression.createNumber(dblVal);
+                                    retexp.floating = !exp1.isInteger() || !exp2.isInteger();
 
-                            if(!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return retexp;
-                        }
-                        else if(strFunName.equals("-"))
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    return retexp;
+                                }
+                                case "-": {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
-
-
-                            dblVal =  dVal1 - dVal2;
-
-                            retexp = Expression.createNumber(dblVal);
-                            retexp.floating = !exp1.isInteger() || !exp2.isInteger();
-
-                            if(!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
-                            	throw new JIPEvaluationException("int_overflow");
-
-                            return retexp;
-                        }
-                        else if (strFunName.equals("atan2"))
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
-
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
-
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
 
-                        	if(dVal1 == 0 && dVal2 == 0)
-                        		throw new JIPEvaluationException(JIPEvaluationException.undefined);
+                                    dblVal = dVal1 - dVal2;
 
-                            dblVal =  Math.atan2(dVal1, dVal2);
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if(strFunName.equals("/"))
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    retexp = Expression.createNumber(dblVal);
+                                    retexp.floating = !exp1.isInteger() || !exp2.isInteger();
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    if (!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    return retexp;
+                                }
+                                case "atan2": {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                            if(dVal2 == 0)
-                            	throw new JIPEvaluationException(JIPEvaluationException.zero_divisor);
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            dblVal =  dVal1 / dVal2;
-                        }
-                        else if(strFunName.equals("//"))
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    if (dVal1 == 0 && dVal2 == 0)
+                                        throw new JIPEvaluationException(JIPEvaluationException.undefined);
 
-                            if(!exp1.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
+                                    dblVal = Math.atan2(dVal1, dVal2);
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "/": {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                            if(!exp2.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            if((int)dVal2 == 0)
-                            	throw new JIPEvaluationException(JIPEvaluationException.zero_divisor);
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                            dblVal =  ((int)dVal1 / (int)dVal2);
+                                    if (dVal2 == 0)
+                                        throw new JIPEvaluationException(JIPEvaluationException.zero_divisor);
 
-                            if((dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
-                            	throw new JIPEvaluationException("int_overflow");
+                                    dblVal = dVal1 / dVal2;
+                                    break;
+                                }
+                                case "//": {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if(strFunName.equals("*"))
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    if (!exp1.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
 
-                            dblVal =  dVal1 * dVal2;
-                            retexp = Expression.createNumber(dblVal);
-                            retexp.floating = !exp1.isInteger() || !exp2.isInteger();
+                                    if (!exp2.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
 
-                            if(!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if ((int) dVal2 == 0)
+                                        throw new JIPEvaluationException(JIPEvaluationException.zero_divisor);
 
-                            return retexp;
-                        }
-                        else if (strFunName.equals("pow") || strFunName.equals("**"))
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    dblVal = ((int) dVal1 / (int) dVal2);
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    if ((dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "*": {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                            dblVal =  Math.pow(dVal1, dVal2);
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            retexp = Expression.createNumber(dblVal);
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
+
+                                    dblVal = dVal1 * dVal2;
+                                    retexp = Expression.createNumber(dblVal);
+                                    retexp.floating = !exp1.isInteger() || !exp2.isInteger();
+
+                                    if (!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
+                                        throw new JIPEvaluationException("int_overflow");
+
+                                    return retexp;
+                                }
+                                case "pow":
+                                case "**": {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
+
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
+
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
+
+                                    dblVal = Math.pow(dVal1, dVal2);
+
+                                    retexp = Expression.createNumber(dblVal);
 //                            if(dblVal <= Integer.MAX_VALUE)
 //                            	retexp.floating = !exp1.isInteger() || !exp2.isInteger();
 
-                            return retexp;
-                        }
-                        else if (strFunName.equals("^"))
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    return retexp;
+                                }
+                                case "^": {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                            dblVal =  Math.pow(dVal1, dVal2);
+                                    dblVal = Math.pow(dVal1, dVal2);
 
-							if(dVal2 == -1 && dVal1 != 1)
-								throw new JIPTypeException(JIPTypeException.FLOAT, exp1);
-                            else if(exp2.isInteger())
-                            	return Expression.createNumber(dblVal);
-							else
-								return Expression.createDouble(dblVal);
-                        }
-                        else if (strFunName.equals("min"))
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    if (dVal2 == -1 && dVal1 != 1)
+                                        throw new JIPTypeException(JIPTypeException.FLOAT, exp1);
+                                    else if (exp2.isInteger())
+                                        return Expression.createNumber(dblVal);
+                                    else
+                                        return Expression.createDouble(dblVal);
+                                }
+                                case "min": {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                            dblVal =  Math.min(dVal1, dVal2);
+                                    dblVal = Math.min(dVal1, dVal2);
 
-                            retexp = Expression.createNumber(dblVal);
-                            retexp.floating = !exp1.isInteger() || !exp2.isInteger();
+                                    retexp = Expression.createNumber(dblVal);
+                                    retexp.floating = !exp1.isInteger() || !exp2.isInteger();
 
-                            if(!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return retexp;
-                        }
-                        else if (strFunName.equals("max"))
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    return retexp;
+                                }
+                                case "max": {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                            dblVal =  Math.max(dVal1, dVal2);
+                                    dblVal = Math.max(dVal1, dVal2);
 
-                            retexp = Expression.createNumber(dblVal);
-                            retexp.floating = !exp1.isInteger() || !exp2.isInteger();
+                                    retexp = Expression.createNumber(dblVal);
+                                    retexp.floating = !exp1.isInteger() || !exp2.isInteger();
 
-                            if(!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (!retexp.floating && (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE))
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return retexp;
-                        }
-                        else if (strFunName.equals("mod"))
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    return retexp;
+                                }
+                                case "mod": {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                            if(!exp1.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
+                                    if (!exp1.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
 
-                            if(!exp2.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
+                                    if (!exp2.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
 
-                            if((int)dVal2 == 0)
-                            	throw new JIPEvaluationException(JIPEvaluationException.zero_divisor);
+                                    if ((int) dVal2 == 0)
+                                        throw new JIPEvaluationException(JIPEvaluationException.zero_divisor);
 
-                            dblVal = (Math.abs(dVal1) % dVal2) * Math.signum(dVal2);
+                                    dblVal = (Math.abs(dVal1) % dVal2) * Math.signum(dVal2);
 
-                            if(dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if (strFunName.equals("rem"))
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "rem": {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                            if(!exp1.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
+                                    if (!exp1.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
 
-                            if(!exp2.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
+                                    if (!exp2.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
 
-                            if((int)dVal2 == 0)
-                            	throw new JIPEvaluationException(JIPEvaluationException.zero_divisor);
+                                    if ((int) dVal2 == 0)
+                                        throw new JIPEvaluationException(JIPEvaluationException.zero_divisor);
 
-                            dblVal = dVal1 % dVal2;
+                                    dblVal = dVal1 % dVal2;
 
-                            if(dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if(strFunName.equals("/\\"))  // bitwise and
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "/\\":
+// bitwise and
+                                {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                            if(!exp1.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
+                                    if (!exp1.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
 
-                            if(!exp2.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
+                                    if (!exp2.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
 
-                            dblVal =  (int)dVal1 & (int)dVal2;
+                                    dblVal = (int) dVal1 & (int) dVal2;
 
-                            if(dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if(strFunName.equals("\\/")) // bitwise or
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "\\/":
+// bitwise or
+                                {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                            if(!exp1.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
+                                    if (!exp1.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
 
-                            if(!exp2.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
+                                    if (!exp2.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
 
-                            dblVal =  (int)dVal1 | (int)dVal2;
+                                    dblVal = (int) dVal1 | (int) dVal2;
 
-                            if(dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if(strFunName.equals("<<")) // left shift
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "<<":
+// left shift
+                                {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                            if(!exp1.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
+                                    if (!exp1.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
 
-                            if(!exp2.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
+                                    if (!exp2.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
 
-                            dblVal =  (int)dVal1 << (int)dVal2;
+                                    dblVal = (int) dVal1 << (int) dVal2;
 
-                            if(dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if(strFunName.equals("xor")) // xor
-                        {
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "xor":
+// xor
+                                {
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                            if(!exp1.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
+                                    if (!exp1.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
 
-                            if(!exp2.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
+                                    if (!exp2.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
 
-                            dblVal =  (int)dVal1 ^ (int)dVal2;
+                                    dblVal = (int) dVal1 ^ (int) dVal2;
 
-                            if(dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if(strFunName.equals(">>")) // right shift
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case ">>":
+// right shift
+                                {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                            if(!exp1.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
+                                    if (!exp1.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp1);
 
-                            if(!exp2.isInteger())
-                            	throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
+                                    if (!exp2.isInteger())
+                                        throw new JIPTypeException(JIPTypeException.INTEGER, exp2);
 
-                            dblVal =  (int)dVal1 >> (int)dVal2;
+                                    dblVal = (int) dVal1 >> (int) dVal2;
 
-                            if(dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
-                            	throw new JIPEvaluationException("int_overflow");
+                                    if (dblVal > Integer.MAX_VALUE || dblVal < Integer.MIN_VALUE)
+                                        throw new JIPEvaluationException("int_overflow");
 
-                            return Expression.createNumber(dblVal);
-                        }
-                        else if(strFunName.equals("div")) // DIV
-                        {
-                            if(head == null)
-                            	throw new JIPInstantiationException();
+                                    return Expression.createNumber(dblVal);
+                                }
+                                case "div":
+// DIV
+                                {
+                                    if (head == null)
+                                        throw new JIPInstantiationException();
 
-                        	final Expression exp1 = Expression.compute(head);
-                            dVal1 = exp1.m_dValue;
+                                    final Expression exp1 = Expression.compute(head);
+                                    dVal1 = exp1.m_dValue;
 
-                            final Expression exp2 = Expression.compute(((ConsCell)params.getTail()).getHead());
-                            final double dVal2 = exp2.m_dValue;
+                                    final Expression exp2 = Expression.compute(((ConsCell) params.getTail()).getHead());
+                                    final double dVal2 = exp2.m_dValue;
 
-                            dblVal =  (int)(dVal1 - dVal1 % dVal2) / dVal2;
-                        }
-                        else
-                        {
-                            throw new JIPTypeException(JIPTypeException.EVALUABLE, new Functor(Atom.createAtom(strFunName + "/2"), null).getPredicateIndicator());//.create(2, strFunName + " is unknown");
-                        }
-                        break;
+                                    dblVal = (int) (dVal1 - dVal1 % dVal2) / dVal2;
+                                    break;
+                                }
+                                default:
+                                    throw new JIPTypeException(JIPTypeException.EVALUABLE, new Functor(Atom.createAtom(strFunName + "/2"), null).getPredicateIndicator());//.create(2, strFunName + " is unknown");
 
-                    default:
-                        throw new JIPTypeException(JIPTypeException.EVALUABLE, func.getPredicateIndicator());//.create(2, strFunName + " is unknown");
-                }
+                            }
+                            break;
 
-                return Expression.createDouble(dblVal);
-            }
-            catch(JIPRuntimeException ex)
-            {
-                throw ex;
-            }
-            catch(ClassCastException ex)
-            {
-            	throw new JIPTypeException(JIPTypeException.EVALUABLE, exp);
-            }
-            catch(NullPointerException ex)
-            {
-            	throw new JIPEvaluationException(JIPEvaluationException.undefined);
+                        default:
+                            throw new JIPTypeException(JIPTypeException.EVALUABLE, func.getPredicateIndicator());//.create(2, strFunName + " is unknown");
+                    }
+
+                    return Expression.createDouble(dblVal);
+                } catch (JIPRuntimeException ex) {
+                    throw ex;
+                } catch (ClassCastException ex) {
+                    throw new JIPTypeException(JIPTypeException.EVALUABLE, exp);
+                } catch (NullPointerException ex) {
+                    throw new JIPEvaluationException(JIPEvaluationException.undefined);
 //                throw JIPRuntimeException.create(2, "Wrong number of arguments in expression");
-            }
-        }
-        else if(exp instanceof ConsCell && !(exp instanceof List))
-        {
-            if(((ConsCell)exp).getHeight() != 1)
-            	throw new JIPTypeException(JIPTypeException.EVALUABLE, exp);
+                }
+            } else if (exp instanceof ConsCell && !(exp instanceof List)) {
+                if (((ConsCell) exp).getHeight() != 1)
+                    throw new JIPTypeException(JIPTypeException.EVALUABLE, exp);
 
-            return compute(((ConsCell)exp).getHead());
-        }
-        else if (exp == null)
-        {
-            throw new JIPInstantiationException();
-        }
-        else
-        {
-        	throw new JIPTypeException(JIPTypeException.EVALUABLE, exp);
+                exp = ((ConsCell) exp).getHead();
+            } else if (exp == null) {
+                throw new JIPInstantiationException();
+            } else {
+                throw new JIPTypeException(JIPTypeException.EVALUABLE, exp);
+            }
         }
     }
 

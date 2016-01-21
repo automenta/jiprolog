@@ -21,8 +21,8 @@ package com.ugos.jiprolog.extensions.io;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Hashtable;
 
 public class RenameFile2 extends JIPXCall
 {
@@ -80,7 +80,7 @@ public class RenameFile2 extends JIPXCall
             if(newName instanceof JIPAtom)
                 strNewName = ((JIPAtom)newName).getName();
             else if(newName instanceof JIPNumber)
-                strNewName = "" + newName.getValue();
+                strNewName = String.valueOf(newName.getValue());
             else
                 throw new JIPTypeException(JIPTypeException.ATOM, newName);
 

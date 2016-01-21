@@ -20,21 +20,21 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.Hashtable;
 import com.ugos.jiprolog.util.ValueEncoder;
 
-final class PrettyPrinter extends Object
-{
+import java.util.Hashtable;
+
+final class PrettyPrinter {
     private static final char[] ESCAPE = {'a', 'b', 't', 'n', 'v', 'f', 'r'};
-    private static String Q_CHARS = "\\()[].,`{}\"";
+    private static final String Q_CHARS = "\\()[].,`{}\"";
 
     public static final String printTerm(final PrologObject obj, final OperatorManager opManager, final boolean bQ)
     {
-    	Hashtable<String, Variable> varTable = new Hashtable<String, Variable>();
+    	Hashtable<String, Variable> varTable = new Hashtable<>();
     	return print(obj, opManager, bQ, varTable);
     }
 
-    private static final String print(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable)
+    private static String print(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable)
     {
     	StringBuilder sb = new StringBuilder();
     	print(obj, opManager, bQ, varTable, sb);
@@ -42,7 +42,7 @@ final class PrettyPrinter extends Object
         return sb.toString();
     }
 
-    private static final void print(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
+    private static void print(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
     {
         if (obj instanceof Atom)
         {
@@ -82,12 +82,12 @@ final class PrettyPrinter extends Object
         }
     }
 
-    private static final void printAtom(final PrologObject obj, final OperatorManager opManager, final boolean bQ, StringBuilder sb)
+    private static void printAtom(final PrologObject obj, final OperatorManager opManager, final boolean bQ, StringBuilder sb)
     {
         printAtomString(((Atom)obj).getName(), opManager,bQ, sb);
     }
 
-    private static final void printAtomString(final String strAtom, final OperatorManager opManager, final boolean bQ, StringBuilder sb)
+    private static void printAtomString(final String strAtom, final OperatorManager opManager, final boolean bQ, StringBuilder sb)
     {
         if(opManager == null || bQ)  // canonical
         {
@@ -113,7 +113,7 @@ final class PrettyPrinter extends Object
 
             boolean bQuoted = false;
 
-            if(Q_CHARS.indexOf(strAtom) > -1)
+            if(Q_CHARS.contains(strAtom))
                 bQuoted = true;
 
             // se comincia con una maiuscola occorre l'apice
@@ -205,7 +205,7 @@ final class PrettyPrinter extends Object
         }
     }
 
-    private static final void printFunctor(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
+    private static void printFunctor(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
     {
         final Functor funct = (Functor)obj;
 
@@ -286,7 +286,7 @@ final class PrettyPrinter extends Object
         }
     }
 
-    private static final void printOperator(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
+    private static void printOperator(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
     {
         final Functor oper = (Functor)obj;
 
@@ -343,7 +343,7 @@ final class PrettyPrinter extends Object
         }
     }
 
-    private static final void printClause(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
+    private static void printClause(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
     {
         // Estrae il nome
         final PrologObject head = ((Clause)obj).getHead();
@@ -359,7 +359,7 @@ final class PrettyPrinter extends Object
         sb.append('.');
     }
 
-    private static final void printExpression(final PrologObject obj, final boolean bQ, StringBuilder sb)
+    private static void printExpression(final PrologObject obj, final boolean bQ, StringBuilder sb)
     {
         final double dVal = ((Expression)obj).getValue();
         final int nVal = (int)dVal;
@@ -370,7 +370,7 @@ final class PrettyPrinter extends Object
         	sb.append(Double.toString(dVal));
     }
 
-    private static final void printList(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
+    private static void printList(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
     {
         if(opManager == null) // canonical
         {
@@ -382,7 +382,7 @@ final class PrettyPrinter extends Object
             {
             	sb.append("'.'(");
             	print(((List)obj).getHead(), null, bQ, varTable, sb);
-            	sb.append(",");
+            	sb.append(',');
             	print(((List)obj).getTail(), null, bQ, varTable, sb);
             	sb.append(')');
             }
@@ -445,17 +445,17 @@ final class PrettyPrinter extends Object
 //    	}
 //
 //    }
-    private static final void printParams(final ConsCell cons, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
+    private static void printParams(final ConsCell cons, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
     {
         // Stampa di una lista
         PrologObject term = cons;
-        PrologObject head = null;
 
         if(cons.getHead() == null)
         {
             return;
         }
 
+        PrologObject head = null;
         while (term != null)
         {
             head = ((ConsCell)term).getHead();
@@ -490,7 +490,7 @@ final class PrettyPrinter extends Object
 //            return printCons(obj);
 //    }
 
-    private static final void printCons(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
+    private static void printCons(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
     {
         // Stampa di una lista
         final ConsCell cons = (ConsCell)obj;
@@ -615,7 +615,7 @@ final class PrettyPrinter extends Object
         }
     }
 
-    private static final void printVariable(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
+    private static void printVariable(final PrologObject obj, final OperatorManager opManager, final boolean bQ, Hashtable<String, Variable> varTable, StringBuilder sb)
     {
         // Stampa di una variabile
         final Variable var = ((Variable)obj).lastVariable();

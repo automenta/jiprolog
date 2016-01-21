@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -36,9 +37,9 @@ import java.util.NoSuchElementException;
  */
 public class JIPTermParser
 {
-    private OperatorManager m_opManager;
+    private final OperatorManager m_opManager;
     private String m_encoding;
-    private JIPEngine m_engine;
+    private final JIPEngine m_engine;
     private Hashtable<String, Variable> m_singletonVars;
 
     JIPTermParser(OperatorManager opManager, JIPEngine engine, String encoding)
@@ -61,8 +62,7 @@ public class JIPTermParser
      * @param ins the input stream to parse.
      * @param streamName tha name of the stream (i.e. the name of the associated file)
      */
-    public final Enumeration<JIPTerm> parseStream(final PushbackLineNumberInputStream ins, final String streamName, final String encoding) throws UnsupportedEncodingException
-    {
+    public final Enumeration<JIPTerm> parseStream(final PushbackLineNumberInputStream ins, final String streamName, final String encoding) {
         return new TermEnumerator(ins, m_opManager, streamName);
     }
 
@@ -76,7 +76,7 @@ public class JIPTermParser
     {
         try
         {
-        	final byte[] btTerm = strTerm.getBytes(getEncoding());
+            final byte[] btTerm = strTerm.getBytes(m_encoding);
             final ByteArrayInputStream is = new ByteArrayInputStream(btTerm);
             PrologParser parser = new PrologParser(new ParserReader(new PushbackLineNumberInputStream(is)), m_opManager, m_engine, "user");
 
@@ -94,7 +94,7 @@ public class JIPTermParser
 
     public class TermEnumerator implements Enumeration<JIPTerm>, StreamPosition
     {
-        private PrologParser m_parser;
+        private final PrologParser m_parser;
 
         private JIPTerm m_nextTerm = null;
 
@@ -145,9 +145,9 @@ public class JIPTermParser
 
 //        	Hashtable<String, JIPVariable> sjvar = new Hashtable<String, JIPVariable>();
 
-        	for(String key : svar.keySet())
+        	for(Map.Entry<String, Variable> stringVariableEntry : svar.entrySet())
         	{
-        		Variable var = svar.get(key);
+        		Variable var = stringVariableEntry.getValue();
         		if(!var.isAnonymous())
         			singletonVars = JIPList.create(JIPFunctor.create("=", JIPCons.create(JIPAtom.create(var.getName()), JIPCons.create(new JIPVariable(var), null))), singletonVars);
 
@@ -163,7 +163,7 @@ public class JIPTermParser
 	/**
 	 * @return the charset encoding
 	 */
-	public String getEncoding() {
+    private String getEncoding() {
 		return m_encoding;
 	}
 

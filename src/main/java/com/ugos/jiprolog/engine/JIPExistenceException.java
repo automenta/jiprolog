@@ -17,8 +17,8 @@ public class JIPExistenceException extends JIPRuntimeException {
 	 *
 	 */
 	private static final long serialVersionUID = 183668069833686724L;
-	private String object;
-	private PrologObject culprit;
+	private final String object;
+	private final PrologObject culprit;
 
 	public PrologObject getCulprit() {
 		return culprit;

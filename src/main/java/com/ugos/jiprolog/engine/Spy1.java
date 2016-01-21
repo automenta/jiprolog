@@ -19,7 +19,8 @@
  */
 
 package com.ugos.jiprolog.engine;
-import java.util.*;
+
+import java.util.Hashtable;
 
 final class Spy1 extends BuiltIn
 {
@@ -31,7 +32,7 @@ final class Spy1 extends BuiltIn
         return true;
     }
 
-    final void spy(PrologObject pred)
+    private void spy(PrologObject pred)
     {
         if(pred == null)
         {
@@ -45,10 +46,10 @@ final class Spy1 extends BuiltIn
         else if(pred instanceof Functor)
         {
             // head deve essere instanza di funtore /2 del tipo name/arity
-            if(pred instanceof Functor && ((Functor)pred).getAtom().equals(Atom.SLASHSLASH))
+            if(((Functor)pred).getAtom().equals(Atom.SLASHSLASH))
             {
                 ConsCell params = ((Functor )pred).getParams();
-                String strPredDef = ((Atom)params.getHead()).getName() + "/" + ((ConsCell)params.getTail()).getHead();
+                String strPredDef = ((Atom)params.getHead()).getName() + '/' + ((ConsCell)params.getTail()).getHead();
                 Hashtable spyTable = (Hashtable)getJIPEngine().getEnvVariable("__spy__");
                 if(spyTable == null)
                 {

@@ -20,13 +20,11 @@
 
 package com.ugos.jiprolog.engine;
 
-import com.ugos.jiprolog.engine.*;
-
 public class JIPUserException extends JIPRuntimeException
 {
-    private JIPTerm m_term;
+    private final JIPTerm m_term;
 
-    public JIPUserException(final JIPTerm term)
+    private JIPUserException(final JIPTerm term)
     {
         super(3000, "User Exception");
         m_term = term;

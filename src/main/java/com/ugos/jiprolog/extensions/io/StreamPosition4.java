@@ -18,12 +18,12 @@
 
 package com.ugos.jiprolog.extensions.io;
 
-import java.util.Hashtable;
-
 import com.ugos.jiprolog.engine.JIPCons;
 import com.ugos.jiprolog.engine.JIPNumber;
 import com.ugos.jiprolog.engine.JIPTerm;
 import com.ugos.jiprolog.engine.JIPXCall;
+
+import java.util.Hashtable;
 
 public final class StreamPosition4 extends JIPXCall
 {

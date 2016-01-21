@@ -20,29 +20,17 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.OutputStream;
-import java.io.Reader;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 //import com.ugos.debug.*;
 
 public class StreamManager
 {
-	private static StreamManager defaultStreamManager;
+	private static final StreamManager defaultStreamManager;
 	private static StreamManager streamManager;
 
 	static
@@ -50,7 +38,7 @@ public class StreamManager
 		defaultStreamManager = new StreamManager();
 	}
 
-	protected StreamManager()
+	private StreamManager()
 	{
 
 	}
@@ -75,7 +63,7 @@ public class StreamManager
 		StreamManager.streamManager = streamManager;
 	}
 
-    public InputStream getInputStream(String strFilePath, String strBasePath, String[] strFileName, String[] strCurDir) throws IOException
+    public static InputStream getInputStream(String strFilePath, String strBasePath, String[] strFileName, String... strCurDir) throws IOException
     {
         InputStream ins = null;
 
@@ -89,11 +77,11 @@ public class StreamManager
 
             // prova con il basepath
             if(strBasePath.toUpperCase().startsWith("JAR://"))
-                ins = getInputStream(strBasePath + "#" + strFilePath, strFileName, strCurDir);
+                ins = getInputStream(strBasePath + '#' + strFilePath, strFileName, strCurDir);
             else if(strBasePath.toUpperCase().startsWith("HTTP://") || strBasePath.toUpperCase().startsWith("HTTPS://"))
-                ins = getInputStream(strBasePath + "/" + strFilePath, strFileName, strCurDir);
+                ins = getInputStream(strBasePath + '/' + strFilePath, strFileName, strCurDir);
             else if(strBasePath.toUpperCase().startsWith("INTERNAL://"))
-                ins = getInputStream(strBasePath + "/" + strFilePath, strFileName, strCurDir);
+                ins = getInputStream(strBasePath + '/' + strFilePath, strFileName, strCurDir);
             else
                 ins = getInputStream(strBasePath + File.separator + strFilePath, strFileName, strCurDir);
         }
@@ -101,7 +89,7 @@ public class StreamManager
         return ins;
     }
 
-    public OutputStream getOutputStream(String strFilePath, String strBasePath, boolean bAppend, String[] strFileName, String[] strCurDir) throws IOException
+    public static OutputStream getOutputStream(String strFilePath, String strBasePath, boolean bAppend, String[] strFileName, String... strCurDir) throws IOException
     {
         OutputStream outs = null;
 
@@ -113,9 +101,9 @@ public class StreamManager
         {
             // prova con il basepath
             if(strBasePath.toUpperCase().startsWith("JAR://"))
-                outs = getOutputStream(strBasePath + "#" + strFilePath, bAppend, strFileName, strCurDir);
+                outs = getOutputStream(strBasePath + '#' + strFilePath, bAppend, strFileName, strCurDir);
             else if(strBasePath.toUpperCase().startsWith("HTTP://"))
-                outs = getOutputStream(strBasePath + "/" + strFilePath, bAppend, strFileName, strCurDir);
+                outs = getOutputStream(strBasePath + '/' + strFilePath, bAppend, strFileName, strCurDir);
             else
                 outs = getOutputStream(strBasePath + File.separator + strFilePath, bAppend, strFileName, strCurDir);
         }
@@ -144,7 +132,7 @@ public class StreamManager
     //curDir contiene la dir corrente con separatore finale
     // strFileName contiene il nome del file
     //public static InputStream getInputStream(String strFilePath, String strBasePath, String[] strFileName, String[] strCurDir) throws IOException
-    private InputStream getInputStream(String strPath, String[] strFileName, String[] strCurDir) throws IOException, SecurityException
+    private static InputStream getInputStream(String strPath, String[] strFileName, String... strCurDir) throws IOException, SecurityException
     {
         // elimina eventuali apici
         if(strPath.charAt(0) == 39 || strPath.charAt(0) == 34)
@@ -165,11 +153,10 @@ public class StreamManager
         else if(strPath.toUpperCase().startsWith("FILE:/"))
         {
             // prova con url
-        	URI uri;
-        	URL url;
+            URL url;
 			try {
-				uri = new URI(strPath);
-				url = uri.toURL();
+                URI uri = new URI(strPath);
+                url = uri.toURL();
 			} catch (URISyntaxException e) {
 				url = new URL(strPath);
 			}
@@ -202,7 +189,7 @@ public class StreamManager
             //Debug.traceln("file:" + strFile, 1);
             strPath = strPath.substring(6, nSepPos);
             //Debug.traceln("jar:" + strPath, 1);
-            strCurDir[0] = strFile + "#";
+            strCurDir[0] = strFile + '#';
             strFileName[0] = strPath;
             ZipFile zipFile = new ZipFile(strPath);
             ByteArrayOutputStream outs;
@@ -255,7 +242,7 @@ public class StreamManager
             strPath = strPath.substring(11);
             strFileName[0] = strPath;//.substring(6);
 
-            InputStream ins = StreamManager.class.getResourceAsStream("/" + strPath);
+            InputStream ins = StreamManager.class.getResourceAsStream('/' + strPath);
             return ins;
         }
 	    else
@@ -273,7 +260,7 @@ public class StreamManager
     }
 
     //curDir contiene la dir corrente con separatore finale
-    private OutputStream getOutputStream(String strPath, boolean bAppend, String[] strFileName, String[] strCurDir) throws IOException
+    private static OutputStream getOutputStream(String strPath, boolean bAppend, String[] strFileName, String... strCurDir) throws IOException
     {
         // elimina eventuali apici
         if(strPath.charAt(0) == 39 || strPath.charAt(0) == 34)

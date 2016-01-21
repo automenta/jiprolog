@@ -22,7 +22,9 @@ package com.ugos.jiprolog.extensions.database;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.io.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.StringTokenizer;
 
 public class TextClausesEnumeration extends JIPClausesEnumeration
@@ -91,9 +93,7 @@ public class TextClausesEnumeration extends JIPClausesEnumeration
      
         //separate parameters by StringTokenizer
         StringTokenizer stk = new StringTokenizer(strLine, "#");
-        
-        String  strTerm;
-        JIPTerm term;
+
         JIPCons list = null;
         
         int i = 0;
@@ -102,8 +102,9 @@ public class TextClausesEnumeration extends JIPClausesEnumeration
             i++;
             
             // extract next term
-            strTerm = stk.nextToken();
+            String strTerm = stk.nextToken();
 
+            JIPTerm term;
             try
             {
                 //parse the term extracted

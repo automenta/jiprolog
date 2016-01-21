@@ -33,39 +33,31 @@ final class AcyclicTerm1 extends BuiltIn
 
     public static boolean acyclic(PrologObject term)
     {
-    	Hashtable<PrologObject, PrologObject> termTbl = new Hashtable<PrologObject, PrologObject>();
+    	Hashtable<PrologObject, PrologObject> termTbl = new Hashtable<>();
     	return acyclic(term, termTbl);
     }
 
-    private static boolean acyclic(PrologObject term, Hashtable<PrologObject, PrologObject> termTbl)
-    {
-    	if(term == null)
-    	{
-    		return true;
-    	}
-    	else if(termTbl.containsKey(term))
-    	{
-    		return false;
-    	}
-		else if(term instanceof Functor)
-		{
-			return acyclic(((Functor)term).getParams(), termTbl);
-		}
-		else if(term instanceof List)
-		{
-    		return acyclic(((List)term).getHead(), termTbl) && acyclic(((List)term).getTail(), termTbl);
-		}
-    	else if(term instanceof ConsCell)
-        {
-    		termTbl.put(term, term);
-    		return acyclic(((ConsCell)term).getHead(), termTbl) && acyclic(((ConsCell)term).getTail(), termTbl);
-    	}
-        else if(term instanceof Variable)
-        {
+	private static boolean acyclic(PrologObject term, Hashtable<PrologObject, PrologObject> termTbl) {
+		while (true) {
+			if (term == null) {
+				return true;
+			} else if (termTbl.containsKey(term)) {
+				return false;
+			} else if (term instanceof Functor) {
+				term = ((Functor) term).getParams();
+				continue;
+			} else if (term instanceof List) {
+				return acyclic(((List) term).getHead(), termTbl) && acyclic(((List) term).getTail(), termTbl);
+			} else if (term instanceof ConsCell) {
+				termTbl.put(term, term);
+				return acyclic(((ConsCell) term).getHead(), termTbl) && acyclic(((ConsCell) term).getTail(), termTbl);
+			} else if (term instanceof Variable) {
 //        	termTbl.put(term, term);
-        	return acyclic(((Variable)term).getObject(), termTbl);
-        }
+				term = ((Variable) term).getObject();
+				continue;
+			}
 
-    	return true;
-    }
+			return true;
+		}
+	}
 }

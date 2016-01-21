@@ -28,7 +28,7 @@ class Functor extends ConsCell
 
     private String   m_strName;
     private int      m_nArity;
-    private String   m_strFriendlyName;
+    private final String   m_strFriendlyName;
 
     public Functor(final String strName, final ConsCell params)
     {
@@ -159,7 +159,7 @@ class Functor extends ConsCell
 
     public Functor getPredicateIndicator()
     {
-    	return getPredicateIndicator(getName());
+        return getPredicateIndicator(m_strName);
     }
 
     public static Functor getPredicateIndicator(String predicateIndicator)

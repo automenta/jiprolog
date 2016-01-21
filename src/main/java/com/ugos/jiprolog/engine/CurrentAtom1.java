@@ -20,25 +20,29 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
 
 final class CurrentAtom1 extends BuiltIn
 {
     private Enumeration<Atom> m_enum = null;
+    private Iterator<Atom> iterator;
 
     public final boolean unify(final Hashtable<Variable, Variable> varsTbl)
     {
         if(m_enum == null)
             m_enum = Atom.s_atomTable.elements();
+        iterator = Atom.s_atomTable.values().iterator();
 
-        if(m_enum.hasMoreElements())
-            return getParam(1).unify(m_enum.nextElement(), varsTbl);
+        if(iterator.hasNext())
+            return getParam(1).unify(iterator.next(), varsTbl);
         else
             return false;
     }
 
     public final boolean hasMoreChoicePoints()
     {
-        return m_enum == null || m_enum.hasMoreElements();
+        return m_enum == null || iterator.hasNext();
     }
 }

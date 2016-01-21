@@ -19,7 +19,9 @@
  */
 
 package com.ugos.jiprolog.engine;
-import java.util.*;
+
+import java.util.Hashtable;
+import java.util.Iterator;
 
 final class Debugging0 extends Write1
 {
@@ -28,10 +30,10 @@ final class Debugging0 extends Write1
         Hashtable spyTable = (Hashtable)getJIPEngine().getEnvVariable("__spy__");
         if(spyTable != null)
         {
-            Enumeration en = spyTable.elements();
-            while(en.hasMoreElements())
+            Iterator iterator = spyTable.values().iterator();
+            while(iterator.hasNext())
             {
-                print(en.nextElement() + ",");
+                print(iterator.next() + ",");
                 //getJIPEngine().getCurrentOutputStream().print(enum.nextElement() + ",");
             }
         }

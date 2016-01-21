@@ -22,8 +22,8 @@ package com.ugos.jiprolog.extensions.io;
 import com.ugos.jiprolog.engine.*;
 import com.ugos.jiprolog.engine.JIPTermParser.TermEnumerator;
 
-import java.io.*;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 public final class ReadTerm3 extends JIPXCall
 {
@@ -80,8 +80,6 @@ public final class ReadTerm3 extends JIPXCall
             getJIPEngine().notifyEvent(JIPEvent.ID_WAITFORUSERINPUT, getPredicate(), getQueryHandle());
 
         JIPFunctor singleton = null;
-        JIPFunctor variable_names = null;
-        JIPFunctor line_counts = null;
 
 //        JIPFunctor variables = null;
 
@@ -96,12 +94,14 @@ public final class ReadTerm3 extends JIPXCall
         JIPFunctor vn = JIPFunctor.create("variable_names", JIPCons.create(JIPVariable.create("Vars"), null));
         pos = options.member(vn);
 
+        JIPFunctor variable_names = null;
         if(pos > 0)
         	variable_names = (JIPFunctor)options.getNth(pos);
 
         JIPFunctor lc = JIPFunctor.create("line_counts", JIPCons.create(JIPVariable.create("Begin"), JIPCons.create(JIPVariable.create("End"), null)));
         pos = options.member(lc);
 
+        JIPFunctor line_counts = null;
         if(pos > 0)
         	line_counts = (JIPFunctor)options.getNth(pos);
 

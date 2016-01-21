@@ -58,7 +58,7 @@ public final class ValueEncoder
 
    /*  this function accepts 8 bytes and returns a long integer
     */
-    public static long bytesToLong(byte[] bytes)
+    public static long bytesToLong(byte... bytes)
     {
         //boolean negative = false;
         long returnLong = 0;
@@ -92,7 +92,7 @@ public final class ValueEncoder
 
    /*  this function accepts 8 bytes and returns a long integer
     */
-    public static int bytesToInt(byte[] bytes)
+    public static int bytesToInt(byte... bytes)
     {
      // boolean negative = false;
       int returnInt = 0;
@@ -124,7 +124,7 @@ public final class ValueEncoder
     }
     
     /** The hexadecimal digits "0" through "f". */
-    private static char[] NIBBLE = {
+    private static final char[] NIBBLE = {
                                       '0', '1', '2', '3', '4', '5', '6', '7',
                                       '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
                                   };
@@ -133,7 +133,7 @@ public final class ValueEncoder
     /**
      * Convert a byte array to a string of hexadecimal digits.
      */
-    public static final String bytesToHexString(byte[] buf)
+    public static final String bytesToHexString(byte... buf)
     {
         return bytesToHexString(buf, 0, buf.length);
     }
@@ -143,9 +143,9 @@ public final class ValueEncoder
      * Convert a byte array to a string of hexadecimal digits.
      * The bytes <code>buf[i..i+length-1]</code> are used.
      */
-    public static final String bytesToHexString(byte[] buf, int i, int length)
+    private static String bytesToHexString(byte[] buf, int i, int length)
     {
-        StringBuffer sb = new StringBuffer(length*2);
+        StringBuilder sb = new StringBuilder(length*2);
         for (int j=i; j<i+length; j++) {
             sb.append(NIBBLE[(buf[j]>>>4)&15]);
             sb.append(NIBBLE[ buf[j]     &15]);
@@ -159,7 +159,7 @@ public final class ValueEncoder
      */
     public static final String longToHexString(long a)
     {
-        StringBuffer sb = new StringBuffer(16);
+        StringBuilder sb = new StringBuilder(16);
         for (int i=0; i<16; i++)
             sb.append(NIBBLE[(int)(a >>> (60-4*i)) & 0xf]);
         return sb.toString();
@@ -171,7 +171,7 @@ public final class ValueEncoder
      */
     public static final String intToHexString(int a)
     {
-        StringBuffer sb = new StringBuffer(8);
+        StringBuilder sb = new StringBuilder(8);
         for (int i=0; i<8; i++)
             sb.append(NIBBLE[(a >>> (60-4*i)) & 0xf]);
         return sb.toString();
@@ -183,7 +183,7 @@ public final class ValueEncoder
      */
     public static final String byteToHexString(byte a)
     {
-        StringBuffer sb = new StringBuffer(2);
+        StringBuilder sb = new StringBuilder(2);
         sb.append(NIBBLE[(a>>>4)&0xf]);
         sb.append(NIBBLE[a&0xf]);
         return sb.toString();
@@ -193,7 +193,7 @@ public final class ValueEncoder
     /**
      * Convert a hexadecimal digit to a byte.
      */
-    public static byte hexDigitToByte(char hDigit)
+    private static byte hexDigitToByte(char hDigit)
     {
         if(hDigit <= '9')
             return (byte)(hDigit-'0');
@@ -224,7 +224,7 @@ public final class ValueEncoder
 
 
     /** The binary digits "0" and "1". */
-    private static char[] BIT = { '0', '1' };
+    private static final char[] BIT = { '0', '1' };
 
 
     /**
@@ -232,7 +232,7 @@ public final class ValueEncoder
      */
     public static final String longToBinString(long a)
     {
-        StringBuffer sb = new StringBuffer(64);
+        StringBuilder sb = new StringBuilder(64);
         for (int i=0; i<64; i++)
             sb.append(BIT[(int)(a >>> (63-i)) & 0x1]);
         return sb.toString();
@@ -244,7 +244,7 @@ public final class ValueEncoder
      */
     public static final String longToBinString(int a)
     {
-        StringBuffer sb = new StringBuffer(32);
+        StringBuilder sb = new StringBuilder(32);
         for (int i=0; i<32; i++)
             sb.append(BIT[(a >>> (31-i)) & 0x1]);
         return sb.toString();

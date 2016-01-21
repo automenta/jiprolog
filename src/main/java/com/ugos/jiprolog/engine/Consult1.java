@@ -24,8 +24,8 @@ import com.ugos.jiprolog.util.io.PushbackLineNumberInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
 
 class Consult1 extends BuiltIn
@@ -108,7 +108,7 @@ class Consult1 extends BuiltIn
             }
             catch(IOException ex)
             {
-                if(strPath.indexOf(".") == -1)//endsWith(".pl"))
+                if(!strPath.contains("."))//endsWith(".pl"))
                 {
                     strPath += ".pl";
                     consult(strPath, engine, nQueryHandle);
@@ -166,7 +166,7 @@ class Consult1 extends BuiltIn
         InputStream oldins = null;
         try
         {
-        	Vector<PrologObject> initializationVector = new Vector<PrologObject>();
+        	Vector<PrologObject> initializationVector = new Vector<>();
 
             oldins = engine.getCurrentInputStream();
             strOldInputStreamName = engine.getCurrentInputStreamHandle();
@@ -183,7 +183,7 @@ class Consult1 extends BuiltIn
                 PrologParser parser = new PrologParser(pins, engine.getOperatorManager(), engine, strStreamName);
 
                 PrologObject term;
-                final Hashtable<String, String> exportTbl = new Hashtable<String, String>(20);
+                final Hashtable<String, String> exportTbl = new Hashtable<>(20);
 
                 exportTbl.put("#module", GlobalDB.USER_MODULE);
                 final WAM wam = new WAM(engine);
@@ -234,25 +234,7 @@ class Consult1 extends BuiltIn
             {}
 
             throw new JIPPermissionException("access", "source_sink", Atom.createAtom(strStreamName), engine);
-        }
-        catch(JIPSyntaxErrorException ex)
-        {
-            if(oldins != null)
-                engine.setCurrentInputStream(oldins, strOldInputStreamName);
-            ex.m_strFileName = strStreamName;
-
-            try
-            {
-                ins.close();
-            }
-            catch(IOException ex1)
-            {}
-
-            ex.m_engine = engine;
-
-            throw ex;
-        }
-        catch(JIPRuntimeException ex)
+        } catch(JIPRuntimeException ex)
         {
             if(oldins != null)
                 engine.setCurrentInputStream(oldins, strOldInputStreamName);
@@ -271,7 +253,7 @@ class Consult1 extends BuiltIn
         }
     }
 
-    protected final static void _assert(PrologObject pred, JIPEngine engine, String strPath, ParserReader pins, Hashtable<String, String> exportTbl, Vector<PrologObject> initializationVector, WAM wam, boolean enableClauseChecks)
+    final static void _assert(PrologObject pred, JIPEngine engine, String strPath, ParserReader pins, Hashtable<String, String> exportTbl, Vector<PrologObject> initializationVector, WAM wam, boolean enableClauseChecks)
     {
 //        System.out.println("ASSERT");  //DBG
 //        System.out.println(pred);  //DBG
@@ -317,7 +299,7 @@ class Consult1 extends BuiltIn
                         }
                         else
                         {
-                            throw JIPRuntimeException.createRuntimeException(47, new StringBuilder(strPath).append("-").append(head.toString(engine)).toString());
+                            throw JIPRuntimeException.createRuntimeException(47, new StringBuilder(strPath).append('-').append(head.toString(engine)).toString());
                             //throw new JIPTypeException(1, head);
                         }
 
@@ -337,7 +319,7 @@ class Consult1 extends BuiltIn
                     if(!wam.query(funct.getParams()))
                     {
                         wam.closeQuery();
-                        throw JIPRuntimeException.createRuntimeException(27, new StringBuilder(strPath).append("-").append(funct.toString(engine)).toString());
+                        throw JIPRuntimeException.createRuntimeException(27, new StringBuilder(strPath).append('-').append(funct.toString(engine)).toString());
                     }
 
                     wam.closeQuery();
@@ -371,7 +353,7 @@ class Consult1 extends BuiltIn
         catch(ClassCastException ex)
         {
 //            ex.printStackTrace();
-            throw JIPRuntimeException.createRuntimeException(21, strPath + "-" + pred.toString(engine));
+            throw JIPRuntimeException.createRuntimeException(21, strPath + '-' + pred.toString(engine));
         }
 //        catch(JIPTypeException ex)
 //        {
@@ -381,11 +363,11 @@ class Consult1 extends BuiltIn
 
     private static void notifySingletonVars(Hashtable singletonVars, ParserReader pins, JIPEngine engine, int nQueryHandle)
     {
-        Enumeration en = singletonVars.keys();
+        Iterator iterator = singletonVars.keySet().iterator();
         ConsCell cons = null;
-        while (en.hasMoreElements())
+        while (iterator.hasNext())
         {
-            cons = new ConsCell(Atom.createAtom((String)en.nextElement()), cons);
+            cons = new ConsCell(Atom.createAtom((String) iterator.next()), cons);
         }
 
         cons = cons.reverse();

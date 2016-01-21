@@ -28,6 +28,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -58,19 +59,19 @@ public class JIPEngine implements Serializable
     public static final int USER_OUTPUT_HANDLE = -2;
     public static final int USER_ERROR_HANDLE = -4;
 
-    private static final String VERSION = new StringBuilder().append(major).append(".").append(minor).append(".").append(build).append(".").append(revision).toString();
+    private static final String VERSION = new StringBuilder().append(major).append('.').append(minor).append('.').append(build).append('.').append(revision).toString();
 
     private static JARClassProvider s_classProvider;
     private static ClassLoader      s_classLoader;
 
     private static GlobalDB s_globalDB;
 
-    private BuiltInFactory  m_builtInFactory;
-    private Hashtable<String, Object>       m_envVarTbl;
+    private final BuiltInFactory  m_builtInFactory;
+    private final Hashtable<String, Object>       m_envVarTbl;
     private EventNotifier   m_eventNotifier;
-    private Hashtable<Integer, AsyncWAMManager>       m_prologTable;
-    private JIPTermParser   m_termParser;
-    private OperatorManager m_opManager;
+    private final Hashtable<Integer, AsyncWAMManager>       m_prologTable;
+    private final JIPTermParser   m_termParser;
+    private final OperatorManager m_opManager;
 
     private boolean         m_bTrace;
 
@@ -128,11 +129,11 @@ public class JIPEngine implements Serializable
 
         m_bTrace         = false;
 
-        m_prologTable    = new Hashtable<Integer, AsyncWAMManager>(10);
+        m_prologTable    = new Hashtable<>(10);
         m_builtInFactory = new BuiltInFactory(this);
         m_globalDB       = s_globalDB.newInstance(this);
         m_eventNotifier  = new EventNotifier(this);
-        m_envVarTbl      = new Hashtable<String, Object>(10);
+        m_envVarTbl      = new Hashtable<>(10);
         m_opManager      = new OperatorManager();
         m_termParser     = new JIPTermParser(m_opManager, this, Charset.defaultCharset().toString());
 
@@ -146,11 +147,7 @@ public class JIPEngine implements Serializable
             File file = new File(".");
             setSearchPath(file.getCanonicalPath());
         }
-        catch(SecurityException ex)
-        {
-            m_strSearchPath  = null;
-        }
-        catch(IOException ex)
+        catch(SecurityException | IOException ex)
         {
             m_strSearchPath  = null;
         }
@@ -178,11 +175,7 @@ public class JIPEngine implements Serializable
         {
 			consultFile("INTERNAL://com/ugos/jiprolog/resources/x.pl");
 		}
-        catch (JIPSyntaxErrorException e)
-        {
-			e.printStackTrace();
-		}
-        catch (IOException e)
+        catch (JIPSyntaxErrorException | IOException e)
         {
 			e.printStackTrace();
 		}
@@ -306,10 +299,9 @@ public class JIPEngine implements Serializable
 //        System.out.println("strBasePath " + strBasePath);  //DBG
 
         Enumeration en = library.entries();
-        ZipEntry entry;
         while(en.hasMoreElements())
         {
-            entry = (ZipEntry)en.nextElement();
+            ZipEntry entry = (ZipEntry) en.nextElement();
             if(entry.getName().endsWith(".pl"))
             {
                 String strCurSarchPath = "";
@@ -322,15 +314,7 @@ public class JIPEngine implements Serializable
                     Consult1.consult(ins, strPath, this, 0, getEnvVariable("enable_clause_check").equals("true"));
                     setSearchPath(strCurSarchPath);
                 }
-                catch(RuntimeException ex)
-                {
-//                    ex.printStackTrace();  // DBG
-
-                    setSearchPath(strCurSarchPath);
-                    library.close();
-                    throw ex;
-                }
-                catch(IOException ex)
+                catch(RuntimeException | IOException ex)
                 {
 //                    ex.printStackTrace();  // DBG
 
@@ -450,7 +434,7 @@ public class JIPEngine implements Serializable
      * @param outs the user output stream to set.
      * @see com.ugos.jiprolog.engine.JIPEngine#getUserOutputStream
      */
-    public final void setUserOutputStream(final OutputStream outs)
+    private void setUserOutputStream(final OutputStream outs)
     {
         if(outs == null)
         {
@@ -477,7 +461,7 @@ public class JIPEngine implements Serializable
      * @param ins the user input stream to set
      * @see com.ugos.jiprolog.engine.JIPEngine#getUserInputStream
      */
-    public final void setUserInputStream(final InputStream ins)
+    private void setUserInputStream(final InputStream ins)
     {
         if(ins == null)
         {
@@ -598,14 +582,13 @@ public class JIPEngine implements Serializable
         closeAllQueries();
         synchronized(m_globalDB)
         {
+
             m_globalDB = s_globalDB.newInstance(this);
             m_opManager.reset();
 
             try {
     			consultFile("INTERNAL://com/ugos/jiprolog/resources/x.pl");
-    		} catch (JIPSyntaxErrorException e) {
-    			e.printStackTrace();
-    		} catch (IOException e) {
+    		} catch (JIPSyntaxErrorException | IOException e) {
     			e.printStackTrace();
     		}
         }
@@ -655,13 +638,13 @@ public class JIPEngine implements Serializable
      * @see com.ugos.jiprolog.engine.JIPEngine#loadFile
      * @see com.ugos.jiprolog.engine.JIPEngine#consultFile
      */
-    public final void unconsultFile(final String strFileName)
+    private void unconsultFile(final String strFileName)
     {
-        final String[] strCurDir = new String[1];
         final String[] strFName = new String[1];
 
         try
         {
+            final String[] strCurDir = new String[1];
             final InputStream ins = StreamManager.getStreamManager().getInputStream(strFileName, m_strSearchPath, strFName, strCurDir);
             ins.close();
         }
@@ -873,10 +856,9 @@ public class JIPEngine implements Serializable
                 query = ((Functor)query).getParams();
         }
 
-        if(m_bTrace)
-            return new JIPQuery(query, new WAMTrace(this));
-        else
-            return new JIPQuery(query, new WAM(this));
+        return m_bTrace ?
+                new JIPQuery(query, new WAMTrace(this)) :
+                new JIPQuery(query, new WAM(this));
     }
 
     /** Opens a query. <br>
@@ -906,7 +888,7 @@ public class JIPEngine implements Serializable
      * @see com.ugos.jiprolog.engine.JIPEngine#closeQuery
      * @see com.ugos.jiprolog.engine.JIPEventListener
      */
-    public synchronized int openQuery(final JIPTerm jipquery)
+    private synchronized int openQuery(final JIPTerm jipquery)
     {
         // get query
         PrologObject query = jipquery.getTerm();
@@ -927,7 +909,7 @@ public class JIPEngine implements Serializable
 
         // store query
         final AsyncWAMManager container = new AsyncWAMManager(wam, query, this);
-        m_prologTable.put(new Integer(container.getHandle()), container);
+        m_prologTable.put(container.getHandle(), container);
 
         // notify open
         notifyOpen(container.getHandle());
@@ -952,11 +934,11 @@ public class JIPEngine implements Serializable
      */
     public synchronized void nextSolution(final int nQueryHandle)
     {
-        if (!m_prologTable.containsKey(new Integer(nQueryHandle)))
+        if (!m_prologTable.containsKey(nQueryHandle))
             throw new JIPInvalidHandleException();
 
         final AsyncWAMManager container =
-                m_prologTable.get(new Integer(nQueryHandle));
+                m_prologTable.get(nQueryHandle);
 
         if (container.isRunning())
         {
@@ -980,14 +962,14 @@ public class JIPEngine implements Serializable
      */
     public synchronized void closeQuery(final int nQueryHandle)
     {
-        if (!m_prologTable.containsKey(new Integer(nQueryHandle)))
+        if (!m_prologTable.containsKey(nQueryHandle))
             throw new JIPInvalidHandleException();
 
         final AsyncWAMManager container =
-                m_prologTable.get(new Integer(nQueryHandle));
+                m_prologTable.get(nQueryHandle);
 
         // rimuove il container dalla tabella
-        m_prologTable.remove(new Integer(nQueryHandle));
+        m_prologTable.remove(nQueryHandle);
 
         // chiude container e query
         container.close();
@@ -1007,11 +989,11 @@ public class JIPEngine implements Serializable
      */
     public synchronized boolean hasMoreChoicePoints(final int nQueryHandle)
     {
-        if (!m_prologTable.containsKey(new Integer(nQueryHandle)))
+        if (!m_prologTable.containsKey(nQueryHandle))
             return false;//throw new JIPInvalidHandleException();
 
         final AsyncWAMManager container =
-                m_prologTable.get(new Integer(nQueryHandle));
+                m_prologTable.get(nQueryHandle);
 
         // N.B. se la query   stata chiusa il container non compare nella tabella
 
@@ -1026,13 +1008,12 @@ public class JIPEngine implements Serializable
      * @see com.ugos.jiprolog.engine.JIPEngine#nextSolution
      * @see com.ugos.jiprolog.engine.JIPEngine#closeQuery
      */
-    public synchronized void closeAllQueries()
+    private synchronized void closeAllQueries()
     {
-        final Enumeration en = m_prologTable.keys();
-        Integer nHandle;
-        while (en.hasMoreElements())
+        Iterator iterator = m_prologTable.keySet().iterator();
+        while (iterator.hasNext())
         {
-            nHandle = (Integer)en.nextElement();
+            Integer nHandle = (Integer) iterator.next();
             final AsyncWAMManager container = m_prologTable.remove(nHandle);
             container.close();
         }
@@ -1109,7 +1090,7 @@ public class JIPEngine implements Serializable
         // pu  essere eliminato poich  la sincronizzazione dovrebbe essere
         // lasciata al chimante me preferisco lasciarlo per
         // mantere la compatibiilit  con le vecchie versioni
-        Thread.yield();
+        //Thread.yield();
         // credo si risolva cos
 
         final Object obj = container.m_result;
@@ -1177,41 +1158,41 @@ public class JIPEngine implements Serializable
         m_eventNotifier.notifyEvent(nID, solution, nQueryHandle);
     }
 
-    private final void notifySolution(final PrologObject solution, final int nQueryHandle)
+    private void notifySolution(final PrologObject solution, final int nQueryHandle)
     {
         m_eventNotifier.notifyEvent(JIPEvent.ID_SOLUTION, solution, nQueryHandle);
     }
 
-    private final void notifyOpen(final int nQueryHandle)
+    private void notifyOpen(final int nQueryHandle)
     {
         final AsyncWAMManager container =
-                m_prologTable.get(new Integer(nQueryHandle));
+                m_prologTable.get(nQueryHandle);
 
         m_eventNotifier.notifyEvent(JIPEvent.ID_OPEN, container.m_query, nQueryHandle);
     }
 
-    private final void notifyMore(final int nQueryHandle)
+    private void notifyMore(final int nQueryHandle)
     {
         final AsyncWAMManager container =
-                m_prologTable.get(new Integer(nQueryHandle));
+                m_prologTable.get(nQueryHandle);
 
         m_eventNotifier.notifyEvent(JIPEvent.ID_MORE, container.m_query, nQueryHandle);
     }
 
-    private final void notifyEnd(final int nQueryHandle)
+    private void notifyEnd(final int nQueryHandle)
     {
         final AsyncWAMManager container =
-                m_prologTable.get(new Integer(nQueryHandle));
+                m_prologTable.get(nQueryHandle);
 
         m_eventNotifier.notifyEvent(JIPEvent.ID_END, container.m_query, nQueryHandle);
     }
 
-    private final void notifyClose(final int nQueryHandle)
+    private void notifyClose(final int nQueryHandle)
     {
         m_eventNotifier.notifyEvent(JIPEvent.ID_CLOSE, null, nQueryHandle);
     }
 
-    final void notifyException(final Throwable err, final int nQueryHandle)
+    private void notifyException(final Throwable err, final int nQueryHandle)
     {
 //        if(err instanceof UndefinedPredicateException)
 //        {

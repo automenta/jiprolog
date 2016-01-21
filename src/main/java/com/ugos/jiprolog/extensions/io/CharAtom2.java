@@ -22,8 +22,7 @@ package com.ugos.jiprolog.extensions.io;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.io.*;
-import java.util.*;
+import java.util.Hashtable;
 
 public class CharAtom2 extends JIPXCall
 {
@@ -53,7 +52,7 @@ public class CharAtom2 extends JIPXCall
                 throw new JIPTypeException(JIPTypeException.INTEGER, cha);
 
             //PrologObject term1 = atom;
-            JIPTerm term = JIPAtom.create("" + (char)c);
+            JIPTerm term = JIPAtom.create(String.valueOf((char) c));
             return atom.unify(term, varsTbl);
         }
         else

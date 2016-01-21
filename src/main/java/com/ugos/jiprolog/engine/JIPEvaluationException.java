@@ -18,7 +18,7 @@ public class JIPEvaluationException extends JIPRuntimeException {
 	public static final String underflow = "underflow";
 	public static final String zero_divisor = "zero_divisor";
 
-	private String error;
+	private final String error;
 
 	public JIPEvaluationException(String error)
 	{

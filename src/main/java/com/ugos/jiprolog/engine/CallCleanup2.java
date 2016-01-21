@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 public class CallCleanup2 extends Call1 {
 
-	WAM wam;
+	private WAM wam;
 	private PrologObject m_goal;
 	private PrologObject m_cleanupGoal;
 

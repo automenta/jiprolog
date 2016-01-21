@@ -21,8 +21,8 @@ package com.ugos.jiprolog.extensions.io;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Hashtable;
 
 public class Dir2 extends JIPXCall
 {
@@ -52,7 +52,7 @@ public class Dir2 extends JIPXCall
                String strFileName;
                File cFile = new File(files[i]);
                if(cFile.isDirectory())
-                   strFileName = "[" + files[i] + "]";
+                   strFileName = '[' + files[i] + ']';
                else
                    strFileName = files[i];
 

@@ -20,7 +20,8 @@
 
 package com.ugos.jiprolog.engine;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
 class Multifile1 extends BuiltIn
 {
@@ -55,7 +56,7 @@ class Multifile1 extends BuiltIn
         return true;
     }
 
-    protected Vector getPredDefVect()
+    Vector getPredDefVect()
     {
         PrologObject pred = getRealTerm(getParam(1));
 
@@ -71,16 +72,16 @@ class Multifile1 extends BuiltIn
 
             try
             {
-                String strPredDef;
                 PrologObject head = getRealTerm(((ConsCell)pred).getHead());
 
                 // head deve essere instanza di funtore /2 del tipo name/arity
                 if(head instanceof Functor)
             	{
-                	if (((Functor)head).getAtom().equals(Atom.SLASHSLASH))
+                    String strPredDef;
+                    if (((Functor)head).getAtom().equals(Atom.SLASHSLASH))
 	                {
 	                    ConsCell params = ((Functor )head).getParams();
-	                    strPredDef = new StringBuilder(((Atom)params.getHead()).getName()).append("/").append(((ConsCell)params.getTail()).getHead().toString(getJIPEngine())).toString();
+	                    strPredDef = new StringBuilder(((Atom)params.getHead()).getName()).append('/').append(((ConsCell)params.getTail()).getHead().toString(getJIPEngine())).toString();
 	                    predDefVect.addElement(strPredDef);
 	                }
 	                else

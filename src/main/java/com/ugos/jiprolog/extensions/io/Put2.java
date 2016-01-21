@@ -21,8 +21,9 @@ package com.ugos.jiprolog.extensions.io;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Hashtable;
 
 public class Put2 extends JIPXCall
 {
@@ -72,18 +73,14 @@ public class Put2 extends JIPXCall
         else if(c instanceof JIPNumber)
         {
         	c1 = (char)((JIPNumber)c).getDoubleValue();
-            if(c1 == -1)  // ignore -1
-            	return true;
 
-            if(c1 < -1 || c1 > Short.MAX_VALUE)  // ignore all
+            if(c1 > Short.MAX_VALUE)  // ignore all
             	throw new JIPTypeException(JIPTypeException.INTEGER, c);
         }
         else
         {
             throw new JIPTypeException(JIPTypeException.INTEGER, c);
         }
-
-        OutputStream writer;
 
         StreamInfo sinfo = JIPio.getStreamInfo(output);
 
@@ -92,7 +89,7 @@ public class Put2 extends JIPXCall
         	throw new JIPPermissionException("output", "stream", sinfo.getAlias());
 
         // Get the stream
-        writer = JIPio.getOutputStream(sinfo.getHandle(), getJIPEngine());
+        OutputStream writer = JIPio.getOutputStream(sinfo.getHandle(), getJIPEngine());
 
 
         try

@@ -7,8 +7,8 @@ import java.util.Vector;
 
 class BagOf3 extends BuiltIn
 {
-    Vector  m_solVect;
-    WAM m_wam;
+    private Vector  m_solVect;
+    private WAM m_wam;
 
     public final boolean unify(final Hashtable varsTbl)
     {
@@ -66,12 +66,12 @@ class BagOf3 extends BuiltIn
         return res.unify(solList, varsTbl);
     }
 
-    public final boolean isDeterministic()
+    public static boolean isDeterministic()
     {
         return false;
     }
 
-    final Vector getSolutions(PrologObject query)
+    private Vector getSolutions(PrologObject query)
     {
         m_wam = getNewWAM();
 
@@ -90,7 +90,7 @@ class BagOf3 extends BuiltIn
         return solVect;
     }
 
-    private final WAM getNewWAM()
+    private WAM getNewWAM()
     {
         if(getWAM() instanceof WAMTrace)
             return new WAMTrace((WAMTrace)getWAM());
@@ -98,25 +98,23 @@ class BagOf3 extends BuiltIn
             return new WAM(m_jipEngine);
     }
 
-    final ConsCell extractVars(PrologObject obj)
-    {
-        if(obj instanceof Functor)
-        {
-            if (((Functor)obj).getFriendlyName().equals("^"))
-                return new ConsCell(((Functor)obj).getParams().getTerm(1), null);
-            else
+    private static ConsCell extractVars(PrologObject obj) {
+        while (true) {
+            if (obj instanceof Functor) {
+                if (((Functor) obj).getFriendlyName().equals("^"))
+                    return new ConsCell(((Functor) obj).getParams().getTerm(1), null);
+                else
+                    return null;
+            } else if (obj instanceof ConsCell) {
+                ConsCell head = extractVars(((ConsCell) obj).getHead());
+                if (head != null)
+                    return ConsCell.append(head, extractVars(((ConsCell) obj).getTail()));
+                else {
+                    obj = ((ConsCell) obj).getTail();
+                }
+            } else
                 return null;
         }
-        else if(obj instanceof ConsCell)
-        {
-            ConsCell head = extractVars(((ConsCell)obj).getHead());
-            if(head != null)
-                return ConsCell.append(head, extractVars(((ConsCell)obj).getTail()));
-            else
-                return extractVars(((ConsCell)obj).getTail());
-        }
-        else
-            return null;
     }
 }
 

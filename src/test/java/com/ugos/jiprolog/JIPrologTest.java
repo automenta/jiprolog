@@ -32,5 +32,23 @@ public class JIPrologTest {
         query.close();
 
     }
+    @Test
+    public void testLibraryUsage2()  {
+        JIPEngine jip = new JIPEngine();
+
+        //System.out.println("running goal " + g);
+
+        JIPQuery query = jip.querySynch("X=50.  X is 10 * 5?");
+
+
+
+        //System.out.println(term);
+        assertEquals("=(50,50)", query.solveNext().toString());
+
+        //System.out.println(term);
+
+        query.close();
+
+    }
 
 }

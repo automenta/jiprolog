@@ -23,7 +23,7 @@ package com.ugos.jiprolog.extensions.terms;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
+import java.util.Hashtable;
 
 public class AtomCodes2 extends JIPXCall
 {
@@ -46,7 +46,7 @@ public class AtomCodes2 extends JIPXCall
         if (atom instanceof JIPAtom)
         {
             String strAtom = ((JIPAtom)atom).getName();
-            if(strAtom.equals(""))
+            if(strAtom.isEmpty())
             {
                 atom = JIPList.NIL;
             }

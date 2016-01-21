@@ -18,20 +18,17 @@
 
 package com.ugos.jiprolog.extensions.io;
 
+import com.ugos.jiprolog.engine.*;
+
 import java.util.Enumeration;
 import java.util.Hashtable;
-
-import com.ugos.jiprolog.engine.JIPAtom;
-import com.ugos.jiprolog.engine.JIPCons;
-import com.ugos.jiprolog.engine.JIPDomainException;
-import com.ugos.jiprolog.engine.JIPNumber;
-import com.ugos.jiprolog.engine.JIPTerm;
-import com.ugos.jiprolog.engine.JIPXCall;
+import java.util.Iterator;
 
 public final class CurrentStream1 extends JIPXCall
 {
     private Enumeration m_ienum = null;
     private Enumeration m_oenum = null;
+    Iterator iterator;
 
     public final boolean unify(final JIPCons params, final Hashtable varsTbl)
     {
@@ -39,20 +36,20 @@ public final class CurrentStream1 extends JIPXCall
 
         if(m_ienum == null)
         {
-            m_ienum = JIPio.itable.elements();
+             iterator = JIPio.itable.values().iterator();
         }
 
         if(m_oenum == null)
         {
-            m_oenum = JIPio.otable.elements();
+            iterator = JIPio.otable.values().iterator();
         }
 
         JIPTerm stream;
 
 
-        while(m_ienum.hasMoreElements())
+        while(iterator.hasNext())
         {
-            StreamInfo sinfo = (StreamInfo)m_ienum.nextElement();
+            StreamInfo sinfo = (StreamInfo) iterator.next();
 
             if(handle instanceof JIPAtom)
             {
@@ -74,9 +71,9 @@ public final class CurrentStream1 extends JIPXCall
             	return params.unify(cons, varsTbl);
         }
 
-        while(m_oenum.hasMoreElements())
+        while(iterator.hasNext())
         {
-            StreamInfo sinfo = (StreamInfo)m_oenum.nextElement();
+            StreamInfo sinfo = (StreamInfo) iterator.next();
 
             if(handle instanceof JIPAtom)
             {
@@ -103,7 +100,7 @@ public final class CurrentStream1 extends JIPXCall
 
     public boolean hasMoreChoicePoints()
     {
-        return m_ienum.hasMoreElements() || m_oenum.hasMoreElements();
+        return iterator.hasNext() || iterator.hasNext();
     }
 }
 

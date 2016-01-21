@@ -32,7 +32,7 @@ public class JIPSyntaxErrorException extends JIPRuntimeException
 {
     private String m_strFile;
     private int m_nLine;
-    private String m_strTerm;
+    private final String m_strTerm;
 
     public JIPSyntaxErrorException(final String strTerm)
     {

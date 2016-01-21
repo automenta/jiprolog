@@ -20,8 +20,9 @@ package com.ugos.jiprolog.extensions.io;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Hashtable;
 
 public final class Nl1 extends JIPXCall
 {

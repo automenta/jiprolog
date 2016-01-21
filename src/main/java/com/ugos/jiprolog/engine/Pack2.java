@@ -31,9 +31,8 @@ final class Pack2 extends BuiltIn
 {
     public final boolean unify(final Hashtable<Variable, Variable> varsTbl)
     {
-        String strDestinationFile = null;
 
-        final PrologObject fileList = getRealTerm(getParam(1));
+		final PrologObject fileList = getRealTerm(getParam(1));
         final PrologObject destinationFile = getRealTerm(getParam(2));
 
 
@@ -41,7 +40,8 @@ final class Pack2 extends BuiltIn
             throw new JIPTypeException(JIPTypeException.LIST, fileList);
 
 
-        if(destinationFile instanceof Atom)
+		String strDestinationFile = null;
+		if(destinationFile instanceof Atom)
         {
         	strDestinationFile = ((Atom)destinationFile).getName();
         }
@@ -72,9 +72,8 @@ final class Pack2 extends BuiltIn
 
     public static final void pack(List fileList, String destinationFile, final JIPEngine engine) throws IOException
     {
-        InputStream ins = null;
 
-        File outf = new File(destinationFile);
+		File outf = new File(destinationFile);
         if(!outf.isAbsolute())
         	outf = new File(engine.getSearchPath(), destinationFile);
 
@@ -82,7 +81,8 @@ final class Pack2 extends BuiltIn
 
         String strPath = null;
         int len = fileList.getHeight();
-        for(int i = 1; i <= len; i++)
+		InputStream ins = null;
+		for(int i = 1; i <= len; i++)
         {
 	        try
 	        {

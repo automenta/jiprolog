@@ -23,14 +23,13 @@ package com.ugos.jiprolog.engine;
 import java.util.Hashtable;
 
 
-abstract class BuiltIn extends Object
-{
+abstract class BuiltIn {
     private ConsCell           m_params            = null;
     private WAM                m_WAM;
-    protected JIPEngine        m_jipEngine;
-    protected BuiltInPredicate m_predicate;
+    JIPEngine        m_jipEngine;
+    private BuiltInPredicate m_predicate;
 
-    public abstract boolean unify(final Hashtable<Variable, Variable> m_varsTbl);
+    protected abstract boolean unify(final Hashtable<Variable, Variable> m_varsTbl);
 
     final boolean unify(final ConsCell param, final Hashtable<Variable, Variable> varsTbl)
     {
@@ -43,7 +42,7 @@ abstract class BuiltIn extends Object
         return false;
     }
 
-    final public WAM getWAM()
+    final WAM getWAM()
     {
         return m_WAM;
     }

@@ -6,16 +6,16 @@ import java.io.InputStream;
 
 public class PushbackLineNumberInputStream extends FilterInputStream {
 
-	protected byte[] buf;
+	private byte[] buf;
 
-    protected int pos;
+    private int pos;
 
     private int lineNumber;
     private int colNumber;
     private int read;
     private boolean skipLF;
 
-    public PushbackLineNumberInputStream(InputStream in, int size) {
+    private PushbackLineNumberInputStream(InputStream in, int size) {
         super(in);
         if (size <= 0) {
             throw new IllegalArgumentException("size <= 0");
@@ -24,9 +24,10 @@ public class PushbackLineNumberInputStream extends FilterInputStream {
         this.buf = new byte[size];
         this.pos = size;
 
-        this.setColNumber(-1);
-        this.setLineNumber(0);
-        this.setRead(0);
+        int colNumber1 = -1;
+        this.colNumber = colNumber1;
+        this.lineNumber = 0;
+        this.read = 0;
     }
 
     public PushbackLineNumberInputStream(InputStream in) {
@@ -104,7 +105,7 @@ public class PushbackLineNumberInputStream extends FilterInputStream {
 		return lineNumber;
 	}
 
-	public void setLineNumber(int lineNumber) {
+	private void setLineNumber(int lineNumber) {
 		this.lineNumber = lineNumber;
 	}
 
@@ -112,7 +113,7 @@ public class PushbackLineNumberInputStream extends FilterInputStream {
 		return colNumber;
 	}
 
-	public void setColNumber(int colNumber) {
+	private void setColNumber(int colNumber) {
 		this.colNumber = colNumber;
 	}
 
@@ -120,7 +121,7 @@ public class PushbackLineNumberInputStream extends FilterInputStream {
 		return read;
 	}
 
-	public void setRead(int read) {
+	private void setRead(int read) {
 		this.read = read;
 	}
 }

@@ -21,7 +21,8 @@
 package com.ugos.jiprolog.engine;
 
 import java.io.*;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
 //import com.ugos.util.MapperHolder;
 
@@ -89,7 +90,7 @@ class Load1 extends Consult1
 //        	ArrayList<PrologObject> program = new ArrayList<PrologObject>();
 //        	MapperHolder.mapper().readerForUpdating(program).readValue(ins);
 
-            final Vector<PrologObject> initializationVector = new Vector<PrologObject>();
+            final Vector<PrologObject> initializationVector = new Vector<>();
             final Hashtable exportTbl = new Hashtable(10,1);
             exportTbl.put("#module", GlobalDB.USER_MODULE);
             engine.getGlobalDB().unconsult(strStramName);
@@ -119,7 +120,7 @@ class Load1 extends Consult1
                 if(!wam.query(goal))
                 {
                     wam.closeQuery();
-                    throw JIPRuntimeException.createRuntimeException(27, strStramName + "-" + goal.toString(engine));
+                    throw JIPRuntimeException.createRuntimeException(27, strStramName + '-' + goal.toString(engine));
                 }
 
                 wam.closeQuery();

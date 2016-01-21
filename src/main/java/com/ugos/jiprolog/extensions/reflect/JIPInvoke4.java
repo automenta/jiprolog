@@ -23,8 +23,10 @@ package com.ugos.jiprolog.extensions.reflect;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Hashtable;
+import java.util.Vector;
 
 public class JIPInvoke4 extends JIPXCall
 {
@@ -193,11 +195,7 @@ public class JIPInvoke4 extends JIPXCall
         {
             throw new JIPRuntimeException(JIPxReflect.ERR_METHOD_NOT_FOUND, JIPxReflect.STR_METHOD_NOT_FOUND);
         }
-        catch(InvocationTargetException ex)
-        {
-            throw new JIPRuntimeException(JIPxReflect.ERR_INSTANTIATION, ex.getMessage());
-        }
-        catch(IllegalAccessException ex)
+        catch(InvocationTargetException | IllegalAccessException ex)
         {
             throw new JIPRuntimeException(JIPxReflect.ERR_INSTANTIATION, ex.getMessage());
         }

@@ -25,7 +25,7 @@ package com.ugos.jiprolog.engine;
 import java.util.Enumeration;
 import java.util.Stack;
 
-final class RulesEnumeration extends Object implements Enumeration
+final class RulesEnumeration implements Enumeration
 {
     private final Enumeration   m_selProgramEnum;
     private boolean             m_bModuleTranparent;

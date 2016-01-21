@@ -29,12 +29,12 @@ class ConsCell extends PrologObject //implements Serializable
 
     static final ConsCell NIL = List.NIL;//new ConsCell(null, null);
 
-    protected PrologObject m_head;
-    protected PrologObject m_tail;
+    PrologObject m_head;
+    PrologObject m_tail;
 
     public ConsCell(final ConsCell master)
     {
-        this((master == null) ? null : master.getHead(), (master == null) ? null : master.getTail());
+        this((master == null) ? null : master.m_head, (master == null) ? null : master.m_tail);
     }
 
     public ConsCell(final PrologObject head, final PrologObject tail)
@@ -143,14 +143,14 @@ class ConsCell extends PrologObject //implements Serializable
         m_head = head;
     }
 
-    public final void setTail(final PrologObject tail)
+    private void setTail(final PrologObject tail)
     {
         m_tail = tail;
     }
 
     public final void setLast(final PrologObject tail)
     {
-        last(this).setTail(tail);
+        last(this).m_tail = tail;
     }
 
     public ConsCell reverse() throws IllegalArgumentException
@@ -180,15 +180,15 @@ class ConsCell extends PrologObject //implements Serializable
             }
             else
             {
-                head = ((ConsCell)tail).getHead();
-                tail = ((ConsCell)tail).getTail();
+                head = ((ConsCell) tail).m_head;
+                tail = ((ConsCell) tail).m_tail;
             }
         }
 
         return cell;
     }
 
-    public static ConsCell last(ConsCell cell) throws IllegalArgumentException
+    private static ConsCell last(ConsCell cell) throws IllegalArgumentException
     {
         ConsCell tail = ((ConsCell)BuiltIn.getRealTerm(cell.m_tail));
 
@@ -225,7 +225,7 @@ class ConsCell extends PrologObject //implements Serializable
     public static final ConsCell append(final ConsCell list1, final ConsCell list2)
     {
         final ConsCell lastCons = last(list1);
-        lastCons.setTail(list2);
+        lastCons.m_tail = list2;
 
         return list1;
     }
@@ -243,9 +243,9 @@ class ConsCell extends PrologObject //implements Serializable
 //        }
 //    }
 
-    static final boolean isPartial(final ConsCell cell)
+    private static boolean isPartial(final ConsCell cell)
     {
-    	PrologObject tail = cell.getTail();
+        PrologObject tail = cell.m_tail;
 
 	    while (tail != null && tail != ConsCell.NIL)
 	    {
@@ -285,9 +285,9 @@ class ConsCell extends PrologObject //implements Serializable
 //			return false;
 //    }
 
-    static final boolean isClosedOrPartial(final ConsCell cell)
+    private static boolean isClosedOrPartial(final ConsCell cell)
     {
-    	PrologObject tail = cell.getTail();
+        PrologObject tail = cell.m_tail;
 
 	    while (tail != null && tail != ConsCell.NIL)
 	    {
@@ -327,7 +327,7 @@ class ConsCell extends PrologObject //implements Serializable
 //			return false;
 //    }
 
-    static final int getHeight(final ConsCell cell, int n)
+    private static int getHeight(final ConsCell cell, int n)
     {
     	int h = 0;
     	ConsCell tail = cell;//((ConsCell)BuiltIn.getRealTerm(cell.m_tail));
@@ -473,8 +473,8 @@ class ConsCell extends PrologObject //implements Serializable
 
         while(i < n && params instanceof ConsCell)
         {
-            param = ((ConsCell)params).getHead();
-            params = BuiltIn.getRealTerm(((ConsCell)params).getTail());
+            param = ((ConsCell) params).m_head;
+            params = BuiltIn.getRealTerm(((ConsCell) params).m_tail);
 
             i++;
         }

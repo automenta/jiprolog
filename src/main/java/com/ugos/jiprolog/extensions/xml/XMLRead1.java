@@ -22,14 +22,13 @@
 package com.ugos.jiprolog.extensions.xml;
 
 import com.ugos.jiprolog.engine.*;
-
-import java.util.*;
-
-import org.xml.sax.*;
 import org.w3c.dom.*;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.util.Hashtable;
 
 public class XMLRead1 extends JIPXCall
 {
@@ -57,14 +56,13 @@ public class XMLRead1 extends JIPXCall
     JIPTerm createXMLTerm(String strStreamName)
     //static JIPTerm createXMLTerm(String strFile)
     {
-        Document xmldoc;
         try
         {
         	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
     		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
 //            //Debug.traceln("Parser: " + parser, 1);
-            xmldoc = dBuilder.parse(new InputSource(strStreamName));
+            Document xmldoc = dBuilder.parse(new InputSource(strStreamName));
 
 
             // get version
@@ -90,10 +88,10 @@ public class XMLRead1 extends JIPXCall
             }
 
             // create prolog structure
-            String strProlog = "[[version = '" + strVer + "'";
+            String strProlog = "[[version = '" + strVer + '\'';
 
             if(strEnc != null)
-                strProlog += ", encoding = '" + strEnc + "'";
+                strProlog += ", encoding = '" + strEnc + '\'';
 
             strProlog += "]";
 
@@ -124,7 +122,7 @@ public class XMLRead1 extends JIPXCall
             //Debug.traceln("Root: " + strRoot, 1);
 
             // create prolog xml doc
-            String strDoc = "xml_document(" + strProlog + ", " + strRoot + ")";
+            String strDoc = "xml_document(" + strProlog + ", " + strRoot + ')';
             //Debug.traceln("Doc: " + strDoc, 1);
             //System.out.println(strDoc);
             JIPTerm xmlDocTerm = getJIPEngine().parser().parseTerm(strDoc);
@@ -165,8 +163,7 @@ public class XMLRead1 extends JIPXCall
         return str;
     }
 
-    private static String createXMLTerm(Node n) throws SAXException
-    {
+    private static String createXMLTerm(Node n) {
         //Debug.traceln("Node: " + n, 1);
         int type = n.getNodeType();
         switch (type)
@@ -200,7 +197,7 @@ public class XMLRead1 extends JIPXCall
                 Element elem = (Element)n;
                 String strName = elem.getNodeName();
 
-                String strElement = "xml_element('" + strName + "'";
+                String strElement = "xml_element('" + strName + '\'';
 
                 // get element attrs
                 NamedNodeMap attrs = elem.getAttributes();
@@ -218,11 +215,11 @@ public class XMLRead1 extends JIPXCall
                     String strChild = createXMLTerm(child);
                     if(strChild != null)
                     {
-                        strChildren += (strChildren.equals("") ? "" : ", ") + createXMLTerm(child);
+                        strChildren += (strChildren.isEmpty() ? "" : ", ") + createXMLTerm(child);
                     }
                 }
 
-                strElement += "[" + strChildren + "])";
+                strElement += '[' + strChildren + "])";
 
                 return strElement;
 
@@ -245,22 +242,22 @@ public class XMLRead1 extends JIPXCall
                 //Debug.traceln("PublicId:" + docType.getPublicId(), 1);
                 //Debug.traceln("SystemId:" + docType.getSystemId(), 1);
 
-                strElement = "xml_doctype('" + docType.getNodeName() + "', [";
+                String s  = "xml_doctype('" + docType.getNodeName() + "', [";
 
                 if(docType.getPublicId() != null)
                 {
-                    strElement += " 'PUBLIC' = '" + doubleQuote(docType.getPublicId()) + "'";
+                    s += " 'PUBLIC' = '" + doubleQuote(docType.getPublicId()) + '\'';
                 }
 
                 if(docType.getSystemId() != null)
                 {
                     if(docType.getPublicId() != null)
-                        strElement += ", ";
+                        s += ", ";
 
-                    strElement += " 'SYSTEM' = '" + doubleQuote(docType.getSystemId()) + "'";
+                   s += " 'SYSTEM' = '" + doubleQuote(docType.getSystemId()) + '\'';
                 }
 
-                strElement += "], ";
+                s += "], ";
 
                 String strInternalSubset = docType.getInternalSubset();
 
@@ -272,7 +269,7 @@ public class XMLRead1 extends JIPXCall
 
                     while(nPos > -1)
                     {
-                        strAux += strInternalSubset.substring(nBegin, nPos) + "'";
+                        strAux += strInternalSubset.substring(nBegin, nPos) + '\'';
                         nBegin = nPos;
                         nPos = strInternalSubset.indexOf('\'', nBegin + 1);
                         //Debug.traceln("strInternalSubset: " + strAux, 1);
@@ -280,16 +277,16 @@ public class XMLRead1 extends JIPXCall
 
                     strAux += strInternalSubset.substring(nBegin);
 
-                    strElement += "['" + strAux + "']";
+                    s += "['" + strAux + "']";
                 }
                 else
                 {
-                    strElement += "[]";
+                    s += "[]";
                 }
 
-                strElement += ")";
+                s += ")";
 
-                return strElement;
+                return s;
 
             default:
                 throw new JIPRuntimeException(4001, "Unsupported Tag: " + n.toString());

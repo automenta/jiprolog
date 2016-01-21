@@ -23,7 +23,7 @@ package com.ugos.jiprolog.extensions.system;
 
 import com.ugos.jiprolog.engine.*;
 
-import java.util.*;
+import java.util.Hashtable;
 
 public class Sleep1 extends JIPXCall
 {
