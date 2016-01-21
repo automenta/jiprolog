@@ -32,7 +32,7 @@ in the file: http://www.ugosweb.com/jiprolog/Presentation.html.
 Granting a "professional" license means granting the right to use the Software
 only to develop personal or commercial applications and the right to distribute
 without any additional fee) an unlimited number of copies of the runtime JIProlog.jar
-(see §4).
+(see  4).
 
 d. Licenses for different use of the software are negated.
 
